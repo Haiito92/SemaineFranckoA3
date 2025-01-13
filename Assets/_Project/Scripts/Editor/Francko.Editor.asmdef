@@ -1,0 +1,16 @@
+{
+    "name": "Francko.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f0907aab11e1afc42ba6253089373b3b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
