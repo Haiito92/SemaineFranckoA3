@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace LittleDialogue.Runtime
 {
@@ -7,6 +8,13 @@ namespace LittleDialogue.Runtime
     public class LDGraph : ScriptableObject
     {
         [SerializeReference]
-        public List<LDNode> m_nodes;
+        private List<LDNode> m_nodes;
+
+        public List<LDNode> Nodes => m_nodes;
+
+        public LDGraph()
+        {
+            m_nodes = new List<LDNode>();
+        }
     }
 }

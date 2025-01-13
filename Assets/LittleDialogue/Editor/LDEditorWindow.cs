@@ -46,7 +46,7 @@ namespace LittleDialogue.Editor
         private void DrawGraph()
         {
             m_serializedObject = new SerializedObject(m_currentGraph);
-            m_currentView = new LDGraphView(m_serializedObject);
+            m_currentView = new LDGraphView(m_serializedObject, this);
             rootVisualElement.Add(m_currentView);
         }
     }
