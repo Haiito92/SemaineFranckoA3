@@ -4,6 +4,7 @@ using System.Linq;
 using LittleDialogue.Runtime;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -161,6 +162,8 @@ namespace LittleDialogue.Editor
             {
                 AddNodeToGraph(node);
             }
+            
+            BindObject();
         }
 
         private void DrawConnections()
@@ -208,18 +211,25 @@ namespace LittleDialogue.Editor
             m_serializedObject.Update();
 
             AddNodeToGraph(node);
+            BindObject();
         }
 
         private void AddNodeToGraph(LDNode node)
         {
             node.TypeName = node.GetType().AssemblyQualifiedName;
 
-            LDEditorNode editorNode = new LDEditorNode(node);
+            LDEditorNode editorNode = new LDEditorNode(node, m_serializedObject);
             editorNode.SetPosition(node.Position);
             m_graphNodes.Add(editorNode);
             m_nodeDictionary.Add(node.ID, editorNode);
             
             AddElement(editorNode);
+        }
+
+        private void BindObject()
+        {
+            m_serializedObject.Update();
+            this.Bind(m_serializedObject);
         }
     }
 }

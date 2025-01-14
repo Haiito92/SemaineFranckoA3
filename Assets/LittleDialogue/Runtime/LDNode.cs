@@ -28,5 +28,15 @@ namespace LittleDialogue.Runtime
         {
             m_position = position;
         }
+
+        public virtual string OnProcess(LDGraph currentGraph)
+        {
+            LDNode nextNodeInFlow = currentGraph.GetNodeFromOutput(m_guid, 0);
+            if (nextNodeInFlow != null)
+            {
+                return nextNodeInFlow.ID;
+            }
+            return string.Empty;
+        }
     }
 }
