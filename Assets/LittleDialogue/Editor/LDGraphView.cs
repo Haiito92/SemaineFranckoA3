@@ -54,6 +54,30 @@ namespace LittleDialogue.Editor
             graphViewChanged += OnGraphViewChangedEvent;
         }
 
+        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
+        {
+            List<Port> allPorts = new List<Port>();
+            List<Port> ports = new List<Port>();
+
+            foreach (LDEditorNode editorNode in m_graphNodes)
+            {
+                allPorts.AddRange(editorNode.Ports);
+            }
+
+            foreach (Port port in allPorts)
+            {
+                if(port == startPort) continue;
+                if(port.node == startPort.node) continue;
+                if(port.direction == startPort.direction) continue;
+                if (port.portType == startPort.portType)
+                {
+                    ports.Add(port);
+                }
+            }
+            
+            return ports;
+        }
+
         private GraphViewChange OnGraphViewChangedEvent(GraphViewChange graphViewChange)
         {
             if (graphViewChange.movedElements != null)

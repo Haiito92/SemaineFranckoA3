@@ -36,9 +36,9 @@ MonoBehaviour:
         m_guid: cd3fca9c-39b8-4329-be2c-9041d3067559
         m_position:
           serializedVersion: 2
-          x: 307.2
-          y: 73.6
-          width: 109.600006
-          height: 52.799995
+          x: 341.6
+          y: 88.8
+          width: 119.20001
+          height: 76.8
         TypeName: LittleDialogue.Runtime.Types.LDDebugLogNode, LittleDialogue.Runtime,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace LittleDialogue.Runtime.Types
 {
-    [LDNodeInfo("Start", "Process/Start")]
+    [LDNodeInfo("Start", "Process/Start", false, true)]
     public class LDStartNode : LDNode
     {
         
