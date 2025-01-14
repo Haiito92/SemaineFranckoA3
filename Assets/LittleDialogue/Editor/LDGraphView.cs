@@ -50,6 +50,7 @@ namespace LittleDialogue.Editor
             this.AddManipulator(new ClickSelector());
 
             DrawNodes();
+            DrawConnections();
 
             graphViewChanged += OnGraphViewChangedEvent;
         }
@@ -104,8 +105,29 @@ namespace LittleDialogue.Editor
                 }
                 
             }
+
+            if (graphViewChange.edgesToCreate != null)
+            {
+                Undo.RecordObject(m_serializedObject.targetObject, "Added Connections");
+                foreach (Edge edge in graphViewChange.edgesToCreate)
+                {
+                    CreateEdge(edge);
+                }
+            }
             
             return graphViewChange;
+        }
+
+        private void CreateEdge(Edge edge)
+        {
+            LDEditorNode inputNode = (LDEditorNode)edge.input.node;
+            int inputIndex = inputNode.Ports.IndexOf(edge.input);
+            
+            LDEditorNode outputNode = (LDEditorNode)edge.output.node;
+            int outputIndex = outputNode.Ports.IndexOf(edge.output);
+
+            LDConnection connection = new LDConnection(inputNode.Node.ID, inputIndex, outputNode.Node.ID, outputIndex);
+            m_graph.Connections.Add(connection);
         }
 
         private void RemoveNode(LDEditorNode editorNode)
@@ -122,6 +144,37 @@ namespace LittleDialogue.Editor
             {
                 AddNodeToGraph(node);
             }
+        }
+
+        private void DrawConnections()
+        {
+            if(m_graph.Connections == null) return;
+
+            foreach (LDConnection connection in m_graph.Connections)
+            {
+                DrawConnection(connection);
+            }
+        }
+
+        private void DrawConnection(LDConnection connection)
+        {
+            LDEditorNode inputNode = GetNode(connection.InputPort.NodeId);
+            LDEditorNode outputNode = GetNode(connection.OutputPort.NodeId);
+            
+            if(inputNode == null || outputNode == null) return;
+
+            Port inputPort = inputNode.Ports[connection.InputPort.PortIndex];
+            Port outputPort = outputNode.Ports[connection.OutputPort.PortIndex];
+
+            Edge edge = inputPort.ConnectTo(outputPort);
+            AddElement(edge);
+        }
+
+        private LDEditorNode GetNode(string nodeId)
+        {
+            LDEditorNode node = null;
+            m_nodeDictionary.TryGetValue(nodeId, out node);
+            return node;
         }
 
         private void ShowSearchWindow(NodeCreationContext obj)

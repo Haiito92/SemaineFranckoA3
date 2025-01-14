@@ -15,6 +15,13 @@ MonoBehaviour:
   m_nodes:
   - rid: 8417688724802371667
   - rid: 8417688724802371668
+  m_connections:
+  - InputPort:
+      NodeId: cd3fca9c-39b8-4329-be2c-9041d3067559
+      PortIndex: 0
+    OutputPort:
+      NodeId: c1bca7d3-bc20-4c0d-8eb5-c9294c6c549e
+      PortIndex: 0
   references:
     version: 2
     RefIds:
