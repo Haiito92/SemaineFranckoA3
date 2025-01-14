@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using LittleDialogue.Runtime;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -16,8 +17,8 @@ namespace LittleDialogue.Editor
         
         public LDEditorWindow Window => m_window;
 
-        public List<LDEditorNode> GraphNodes { get; set; }
-        public Dictionary<string, LDEditorNode> NodeDictionary { get; set; }
+        private List<LDEditorNode> m_graphNodes;
+        private Dictionary<string, LDEditorNode> m_nodeDictionary;
 
         private LDWindowSearchProvider m_searchProvider;
         
@@ -27,8 +28,8 @@ namespace LittleDialogue.Editor
             m_graph = (LDGraph)serializedObject.targetObject;
             m_window = window;
 
-            GraphNodes = new List<LDEditorNode>();
-            NodeDictionary = new Dictionary<string, LDEditorNode>();
+            m_graphNodes = new List<LDEditorNode>();
+            m_nodeDictionary = new Dictionary<string, LDEditorNode>();
 
             m_searchProvider = ScriptableObject.CreateInstance<LDWindowSearchProvider>();
             m_searchProvider.GraphView = this;
@@ -49,6 +50,46 @@ namespace LittleDialogue.Editor
             this.AddManipulator(new ClickSelector());
 
             DrawNodes();
+
+            graphViewChanged += OnGraphViewChangedEvent;
+        }
+
+        private GraphViewChange OnGraphViewChangedEvent(GraphViewChange graphViewChange)
+        {
+            if (graphViewChange.movedElements != null)
+            {
+                Undo.RecordObject(m_serializedObject.targetObject, "Moved Elements");
+
+                foreach (LDEditorNode editorNode in graphViewChange.movedElements.OfType<LDEditorNode>())
+                {
+                    editorNode.SavePosition();
+                }
+            }
+            
+            if (graphViewChange.elementsToRemove != null)
+            {
+                Undo.RecordObject(m_serializedObject.targetObject, "Removed Stuff From Graph");
+                
+                List<LDEditorNode> editorNodes = graphViewChange.elementsToRemove.OfType<LDEditorNode>().ToList();
+                if (editorNodes.Count > 0)
+                {
+                    for (int i = editorNodes.Count - 1; i >= 0; i--)
+                    {
+                        RemoveNode(editorNodes[i]);
+                    }
+                }
+                
+            }
+            
+            return graphViewChange;
+        }
+
+        private void RemoveNode(LDEditorNode editorNode)
+        {
+            m_graph.Nodes.Remove(editorNode.Node);
+            m_nodeDictionary.Remove(editorNode.Node.ID);
+            m_graphNodes.Remove(editorNode);
+            m_serializedObject.Update();
         }
 
         private void DrawNodes()
@@ -80,8 +121,8 @@ namespace LittleDialogue.Editor
 
             LDEditorNode editorNode = new LDEditorNode(node);
             editorNode.SetPosition(node.Position);
-            GraphNodes.Add(editorNode);
-            NodeDictionary.Add(node.ID, editorNode);
+            m_graphNodes.Add(editorNode);
+            m_nodeDictionary.Add(node.ID, editorNode);
             
             AddElement(editorNode);
         }

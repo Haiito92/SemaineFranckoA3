@@ -12,3 +12,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbab71b6b2dfbe540987d573ab53eb23, type: 3}
   m_Name: LDGraphTest
   m_EditorClassIdentifier: 
+  m_nodes:
+  - rid: 8417688724802371667
+  - rid: 8417688724802371668
+  references:
+    version: 2
+    RefIds:
+    - rid: 8417688724802371667
+      type: {class: LDStartNode, ns: LittleDialogue.Runtime.Types, asm: LittleDialogue.Runtime}
+      data:
+        m_guid: c1bca7d3-bc20-4c0d-8eb5-c9294c6c549e
+        m_position:
+          serializedVersion: 2
+          x: 193.60002
+          y: 100
+          width: 0
+          height: 0
+        TypeName: LittleDialogue.Runtime.Types.LDStartNode, LittleDialogue.Runtime,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - rid: 8417688724802371668
+      type: {class: LDDebugLogNode, ns: LittleDialogue.Runtime.Types, asm: LittleDialogue.Runtime}
+      data:
+        m_guid: cd3fca9c-39b8-4329-be2c-9041d3067559
+        m_position:
+          serializedVersion: 2
+          x: 307.2
+          y: 73.6
+          width: 109.600006
+          height: 52.799995
+        TypeName: LittleDialogue.Runtime.Types.LDDebugLogNode, LittleDialogue.Runtime,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null

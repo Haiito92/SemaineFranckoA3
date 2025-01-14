@@ -10,6 +10,8 @@ namespace LittleDialogue.Editor
     public class LDEditorNode : Node
     {
         private LDNode m_node;
+
+        public LDNode Node => m_node;
         
         public LDEditorNode(LDNode node)
         {
@@ -28,6 +30,11 @@ namespace LittleDialogue.Editor
             }
             
             this.name = typeInfo.Name;
+        }
+
+        public void SavePosition()
+        {
+            m_node.SetPosition(GetPosition());
         }
     }
 }

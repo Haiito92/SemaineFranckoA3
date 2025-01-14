@@ -1,6 +1,7 @@
 using System;
 using LittleDialogue.Runtime;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace LittleDialogue.Editor
@@ -46,6 +47,21 @@ namespace LittleDialogue.Editor
             }
         }
 
+        private void OnGUI()
+        {
+            if (m_currentGraph != null)
+            {
+                if (EditorUtility.IsDirty(m_currentGraph))
+                {
+                    this.hasUnsavedChanges = true;
+                }
+                else
+                {
+                    this.hasUnsavedChanges = false;
+                }
+            }
+        }
+
         private void Load(LDGraph target)
         {
             m_currentGraph = target;
@@ -56,7 +72,15 @@ namespace LittleDialogue.Editor
         {
             m_serializedObject = new SerializedObject(m_currentGraph);
             m_currentView = new LDGraphView(m_serializedObject, this);
+            m_currentView.graphViewChanged += OnChange;
             rootVisualElement.Add(m_currentView);
         }
+
+        private GraphViewChange OnChange(GraphViewChange graphviewchange)
+        {
+            EditorUtility.SetDirty(m_currentGraph);
+            return graphviewchange;
+        }
+
     }
 }
