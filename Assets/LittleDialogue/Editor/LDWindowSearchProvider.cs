@@ -69,7 +69,7 @@ namespace LittleDialogue.Editor
                 string[] splits2 = entry2.Title.Split('/');
                 for (int i = 0; i < splits1.Length; i++)
                 {
-                    if (i == splits2.Length) return 1;
+                    if (i >= splits2.Length) return 1;
                     int value = splits1[i].CompareTo(splits2[i]);
                     if (value != 0)
                     {
@@ -92,7 +92,7 @@ namespace LittleDialogue.Editor
 
                 string groupName = "";
 
-                for (int i = 0; i < entryTitle.Length; i++)
+                for (int i = 0; i < entryTitle.Length - 1; i++)
                 {
                     groupName += entryTitle[i];
                     if (!groups.Contains(groupName))

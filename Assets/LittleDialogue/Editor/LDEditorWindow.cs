@@ -1,3 +1,4 @@
+using System;
 using LittleDialogue.Runtime;
 using UnityEditor;
 using UnityEngine;
@@ -35,6 +36,14 @@ namespace LittleDialogue.Editor
             LDEditorWindow newWindow = CreateWindow<LDEditorWindow>(typeof(LDEditorWindow), typeof(SceneView));
             newWindow.titleContent = new GUIContent($"{target.name}");
             newWindow.Load(target);
+        }
+
+        private void OnEnable()
+        {
+            if (m_currentGraph != null)
+            {
+                DrawGraph();
+            }
         }
 
         private void Load(LDGraph target)

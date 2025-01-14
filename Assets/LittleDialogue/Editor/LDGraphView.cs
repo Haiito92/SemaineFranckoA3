@@ -13,11 +13,11 @@ namespace LittleDialogue.Editor
         private LDGraph m_graph;
         private SerializedObject m_serializedObject;
         private LDEditorWindow m_window;
-
+        
         public LDEditorWindow Window => m_window;
 
-        public List<LDEditorNode> m_graphNodes;
-        public Dictionary<string, LDEditorNode> m_nodeDictionary;
+        public List<LDEditorNode> GraphNodes { get; set; }
+        public Dictionary<string, LDEditorNode> NodeDictionary { get; set; }
 
         private LDWindowSearchProvider m_searchProvider;
         
@@ -27,8 +27,8 @@ namespace LittleDialogue.Editor
             m_graph = (LDGraph)serializedObject.targetObject;
             m_window = window;
 
-            m_graphNodes = new List<LDEditorNode>();
-            m_nodeDictionary = new Dictionary<string, LDEditorNode>();
+            GraphNodes = new List<LDEditorNode>();
+            NodeDictionary = new Dictionary<string, LDEditorNode>();
 
             m_searchProvider = ScriptableObject.CreateInstance<LDWindowSearchProvider>();
             m_searchProvider.GraphView = this;
@@ -41,11 +41,22 @@ namespace LittleDialogue.Editor
             GridBackground background = new GridBackground();
             background.name = "Grid";
             Add(background);
+            background.SendToBack();
             
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new ClickSelector());
+
+            DrawNodes();
+        }
+
+        private void DrawNodes()
+        {
+            foreach (LDNode node in m_graph.Nodes)
+            {
+                AddNodeToGraph(node);
+            }
         }
 
         private void ShowSearchWindow(NodeCreationContext obj)
@@ -67,10 +78,10 @@ namespace LittleDialogue.Editor
         {
             node.TypeName = node.GetType().AssemblyQualifiedName;
 
-            LDEditorNode editorNode = new LDEditorNode();
+            LDEditorNode editorNode = new LDEditorNode(node);
             editorNode.SetPosition(node.Position);
-            m_graphNodes.Add(editorNode);
-            m_nodeDictionary.Add(node.ID, editorNode);
+            GraphNodes.Add(editorNode);
+            NodeDictionary.Add(node.ID, editorNode);
             
             AddElement(editorNode);
         }
