@@ -19,6 +19,7 @@ namespace LittleDialogue.Editor
 
         private List<LDEditorNode> m_graphNodes;
         private Dictionary<string, LDEditorNode> m_nodeDictionary;
+        private Dictionary<Edge, LDConnection> m_connectionDictionary;
 
         private LDWindowSearchProvider m_searchProvider;
         
@@ -30,6 +31,8 @@ namespace LittleDialogue.Editor
 
             m_graphNodes = new List<LDEditorNode>();
             m_nodeDictionary = new Dictionary<string, LDEditorNode>();
+            m_connectionDictionary = new Dictionary<Edge, LDConnection>();
+            m_connectionDictionary = new Dictionary<Edge, LDConnection>();
 
             m_searchProvider = ScriptableObject.CreateInstance<LDWindowSearchProvider>();
             m_searchProvider.GraphView = this;
@@ -103,7 +106,11 @@ namespace LittleDialogue.Editor
                         RemoveNode(editorNodes[i]);
                     }
                 }
-                
+
+                foreach (Edge edge in graphViewChange.elementsToRemove.OfType<Edge>())
+                {
+                    RemoveConnection(edge);
+                }
             }
 
             if (graphViewChange.edgesToCreate != null)
@@ -128,6 +135,7 @@ namespace LittleDialogue.Editor
 
             LDConnection connection = new LDConnection(inputNode.Node.ID, inputIndex, outputNode.Node.ID, outputIndex);
             m_graph.Connections.Add(connection);
+            m_connectionDictionary.Add(edge, connection);
         }
 
         private void RemoveNode(LDEditorNode editorNode)
@@ -138,6 +146,15 @@ namespace LittleDialogue.Editor
             m_serializedObject.Update();
         }
 
+        private void RemoveConnection(Edge edge)
+        {
+            if (m_connectionDictionary.TryGetValue(edge, out LDConnection connection))
+            {
+                m_graph.Connections.Remove(connection);
+                m_connectionDictionary.Remove(edge);
+            }
+        }
+        
         private void DrawNodes()
         {
             foreach (LDNode node in m_graph.Nodes)
@@ -168,6 +185,7 @@ namespace LittleDialogue.Editor
 
             Edge edge = inputPort.ConnectTo(outputPort);
             AddElement(edge);
+            m_connectionDictionary.Add(edge, connection);
         }
 
         private LDEditorNode GetNode(string nodeId)

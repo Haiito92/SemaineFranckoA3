@@ -15,6 +15,7 @@ MonoBehaviour:
   m_nodes:
   - rid: 8417688724802371667
   - rid: 8417688724802371668
+  - rid: 8417688724802371748
   m_connections:
   - InputPort:
       NodeId: cd3fca9c-39b8-4329-be2c-9041d3067559
@@ -22,6 +23,12 @@ MonoBehaviour:
     OutputPort:
       NodeId: c1bca7d3-bc20-4c0d-8eb5-c9294c6c549e
       PortIndex: 0
+  - InputPort:
+      NodeId: 356babc7-f34c-45e4-be55-2150b936815f
+      PortIndex: 0
+    OutputPort:
+      NodeId: cd3fca9c-39b8-4329-be2c-9041d3067559
+      PortIndex: 1
   references:
     version: 2
     RefIds:
@@ -47,5 +54,17 @@ MonoBehaviour:
           y: 88.8
           width: 119.20001
           height: 76.8
+        TypeName: LittleDialogue.Runtime.Types.LDDebugLogNode, LittleDialogue.Runtime,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    - rid: 8417688724802371748
+      type: {class: LDDebugLogNode, ns: LittleDialogue.Runtime.Types, asm: LittleDialogue.Runtime}
+      data:
+        m_guid: 356babc7-f34c-45e4-be55-2150b936815f
+        m_position:
+          serializedVersion: 2
+          x: 525.60004
+          y: 200
+          width: 109.599976
+          height: 76.79999
         TypeName: LittleDialogue.Runtime.Types.LDDebugLogNode, LittleDialogue.Runtime,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
