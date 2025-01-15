@@ -1,19 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using LittleDialogue.Editor.Utilities;
 using LittleDialogue.Runtime;
 using LittleDialogue.Runtime.Attributes;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace LittleDialogue.Editor
 {
     public class LDEditorNode : Node
     {
         private LDNode m_node;
-        private Port m_outputPort;
+        private List<Port> m_outputPorts;
         private List<Port> m_ports;
 
         private SerializedObject m_serializedObject;
@@ -33,6 +35,7 @@ namespace LittleDialogue.Editor
 
             title = info.Title;
 
+            m_outputPorts = new List<Port>();
             m_ports = new List<Port>();
             
             string[] depths = info.MenuItem.Split('/');
@@ -42,16 +45,17 @@ namespace LittleDialogue.Editor
             }
             
             this.name = typeInfo.Name;
+
+            DrawTitleButtons(info);
+            if (info.HasFlowInput)
+            {
+                CreateFlowInputPort();
+            }
             
             //So output is always index 0 (to be changed later)
             if (info.HasFlowOutput)
             {
                 CreateFlowOutputPort();
-            }
-            
-            if (info.HasFlowInput)
-            {
-                CreateFlowInputPort();
             }
 
             foreach (FieldInfo property in typeInfo.GetFields())
@@ -66,9 +70,45 @@ namespace LittleDialogue.Editor
             RefreshExpandedState();
         }
 
-        private void OnFieldChangeCallback(SerializedPropertyChangeEvent evt)
+        private void DrawTitleButtons(LDNodeInfoAttribute info)
         {
-            throw new NotImplementedException();
+            if (info.HasMultipleOutputs)
+            {
+                titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Plus",OnAddOutput));
+                titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Minus"));
+            }
+        }
+
+        private void OnAddOutput()
+        {
+            CreateFlowOutputPort();
+        }
+        private void OnRemoveOutput()
+        {
+            //Create function for removing output
+        }
+
+        private void CreateFlowInputPort()
+        {
+            Port inputPort = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single,
+                typeof(PortTypes.FlowPort));
+            inputPort.portName = "In";
+            inputPort.tooltip = "Flow input";
+            m_ports.Add(inputPort);
+            inputContainer.Add(inputPort); 
+        }
+
+        private void CreateFlowOutputPort()
+        {
+            Port outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single,
+                typeof(PortTypes.FlowPort));
+            outputPort.portName = "Out";
+            outputPort.tooltip = "Flow output";
+            
+            //Add to editor node
+            m_outputPorts.Add(outputPort);
+            m_ports.Add(outputPort);
+            outputContainer.Add(outputPort);
         }
 
         private PropertyField DrawProperty(string propertyName)
@@ -104,27 +144,7 @@ namespace LittleDialogue.Editor
                 }
             }
         }
-
-        private void CreateFlowInputPort()
-        {
-            Port inputPort = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single,
-                typeof(PortTypes.FlowPort));
-            inputPort.portName = "In";
-            inputPort.tooltip = "Flow input";
-            m_ports.Add(inputPort);
-            inputContainer.Add(inputPort); 
-        }
-
-        private void CreateFlowOutputPort()
-        {
-            m_outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single,
-                typeof(PortTypes.FlowPort));
-            m_outputPort.portName = "Out";
-            m_outputPort.tooltip = "Flow output";
-            m_ports.Add(m_outputPort);
-            outputContainer.Add(m_outputPort);
-        }
-
+        
         public void SavePosition()
         {
             m_node.SetPosition(GetPosition());

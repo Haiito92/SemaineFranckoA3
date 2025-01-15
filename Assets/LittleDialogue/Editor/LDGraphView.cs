@@ -137,6 +137,9 @@ namespace LittleDialogue.Editor
             LDConnection connection = new LDConnection(inputNode.Node.ID, inputIndex, outputNode.Node.ID, outputIndex);
             m_graph.Connections.Add(connection);
             m_connectionDictionary.Add(edge, connection);
+            
+            inputNode.Node.NodeConnections.Add(connection);
+            outputNode.Node.NodeConnections.Add(connection);
         }
 
         private void RemoveNode(LDEditorNode editorNode)
@@ -153,6 +156,14 @@ namespace LittleDialogue.Editor
             {
                 m_graph.Connections.Remove(connection);
                 m_connectionDictionary.Remove(edge);
+                
+                LDEditorNode inputNode = (LDEditorNode)edge.input.node;
+                LDEditorNode outputNode = (LDEditorNode)edge.output.node;
+                
+                inputNode.Node.NodeConnections.Remove(connection);
+                outputNode.Node.NodeConnections.Remove(connection);
+                
+                m_serializedObject.Update();
             }
         }
         

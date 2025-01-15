@@ -13,16 +13,59 @@ namespace LittleDialogue.Runtime
         private void OnEnable()
         {
             m_graphInstance = Instantiate(m_graph);
+            RegisterEvents();
             ExecuteAsset();
         }
 
+        private void OnDisable()
+        {
+            UnRegisterEvents();
+        }
+
+        private void RegisterEvents()
+        {
+            foreach (LDNode node in m_graphInstance.Nodes)
+            {
+                node.ReceivedFlow += OnReceivedFlowAction;
+                node.Executed += OnExecutedAction;
+                node.EmittedFlow += OnEmittedFlowAction;
+            }
+        }
+
+        private void OnReceivedFlowAction()
+        {
+            //Doing nothing for now
+        }
+
+        private void OnExecutedAction()
+        {
+            //Doing nothing for now
+        }
+
+        private void OnEmittedFlowAction(string nextNodeId)
+        {
+            m_graphInstance.GetNode(nextNodeId).ReceiveFlow();
+        }
+
+        private void UnRegisterEvents()
+        {
+            foreach (LDNode node in m_graphInstance.Nodes)
+            {
+                node.ReceivedFlow -= OnReceivedFlowAction;
+                node.Executed -= OnExecutedAction;
+                node.EmittedFlow -= OnEmittedFlowAction;
+            }
+        }
+        
         private void ExecuteAsset()
         {
             m_graphInstance.Init();
             
             LDNode startNode = m_graphInstance.GetStartNode();
 
-            ProcessAndMoveToNextNode(startNode);
+            startNode.ReceiveFlow();
+            
+            //ProcessAndMoveToNextNode(startNode);
         }
 
         private void ProcessAndMoveToNextNode(LDNode currentNode)

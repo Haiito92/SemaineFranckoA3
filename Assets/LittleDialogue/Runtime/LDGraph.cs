@@ -9,11 +9,13 @@ namespace LittleDialogue.Runtime
     [CreateAssetMenu(fileName = "LDGraph", menuName = "Scriptable Objects/LDGraph")]
     public class LDGraph : ScriptableObject
     {
+        //We serialize so that an instance can receive the data
         [SerializeReference]
         private List<LDNode> m_nodes;
 
         private Dictionary<string, LDNode> m_nodeDictionary;
         
+        //We serialize so that an instance can receive the data
         [SerializeField] private List<LDConnection> m_connections;
         
         public List<LDNode> Nodes => m_nodes;

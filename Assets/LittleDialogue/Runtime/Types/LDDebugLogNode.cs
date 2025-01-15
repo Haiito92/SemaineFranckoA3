@@ -8,7 +8,17 @@ namespace LittleDialogue.Runtime.Types
     {
         [ExposedProperty()]
         public string LogMessage;
-        
+
+        protected override void ExecuteNode()
+        {
+            Debug.Log(LogMessage);
+            
+            LDConnection connection = NodeConnections.Find(x => x.OutputPort.NodeId == ID);
+            EmitFlow(connection.OutputPort.NodeId);
+            
+            base.ExecuteNode();
+        }
+
         public override string OnProcess(LDGraph currentGraph)
         {
             Debug.Log(LogMessage);
