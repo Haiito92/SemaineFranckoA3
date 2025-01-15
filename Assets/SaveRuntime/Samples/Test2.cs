@@ -1,12 +1,12 @@
 using UnityEngine;
 
 [Savable(CanBeModified = true)]
-public class Test1 : MonoBehaviour
+public class Test2 : MonoBehaviour
 {
     public bool bool1 = true;
 
     private string string1 = "string1";
 
-    protected int int1 = 15;
+    protected int int1 = 14;
     
 }
