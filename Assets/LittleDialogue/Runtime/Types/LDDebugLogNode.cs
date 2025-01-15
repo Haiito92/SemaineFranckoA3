@@ -14,7 +14,7 @@ namespace LittleDialogue.Runtime.Types
             Debug.Log(LogMessage);
             
             LDConnection connection = NodeConnections.Find(x => x.OutputPort.NodeId == ID);
-            EmitFlow(connection.OutputPort.NodeId);
+            EmitFlow(connection.InputPort.NodeId);
             
             base.ExecuteNode();
         }
