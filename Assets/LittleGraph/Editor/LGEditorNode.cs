@@ -1,27 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using LittleDialogue.Editor.Utilities;
-using LittleDialogue.Runtime;
-using LittleDialogue.Runtime.Attributes;
+using LittleGraph.Editor.Utilities;
+using LittleGraph.Runtime;
+using LittleGraph.Runtime.Attributes;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace LittleDialogue.Editor
+namespace LittleGraph.Editor
 {
-    public class LDEditorNode : Node
+    public class LGEditorNode : Node
     {
-        private LDNode m_node;
+        private LGNode m_node;
         private List<Port> m_outputPorts;
         private List<Port> m_ports;
 
         private SerializedObject m_serializedObject;
         private SerializedProperty m_serializedProperty;
         
-        public LDNode Node => m_node;
+        public LGNode Node => m_node;
         public List<Port> OutputPorts
         {
             get => m_outputPorts;
@@ -29,18 +28,18 @@ namespace LittleDialogue.Editor
         }
         public List<Port> Ports => m_ports;
 
-        public event Action<LDEditorNode> OutputRemovedAction; 
+        public event Action<LGEditorNode> OutputRemovedAction; 
         
-        public LDEditorNode(LDNode node, SerializedObject graphObject)
+        public LGEditorNode(LGNode node, SerializedObject graphObject)
         {
             this.AddToClassList("ld-node");
 
             m_serializedObject = graphObject;
-            LDGraph graph = (LDGraph)graphObject.targetObject;
+            LGGraph graph = (LGGraph)graphObject.targetObject;
             
             m_node = node;
             Type typeInfo = node.GetType();
-            LDNodeInfoAttribute info = typeInfo.GetCustomAttribute<LDNodeInfoAttribute>();
+            LGNodeInfoAttribute info = typeInfo.GetCustomAttribute<LGNodeInfoAttribute>();
 
             title = info.Title;
 
@@ -80,7 +79,7 @@ namespace LittleDialogue.Editor
             RefreshExpandedState();
         }
 
-        private void DrawTitleButtons(LDNodeInfoAttribute info, LDGraph graph)
+        private void DrawTitleButtons(LGNodeInfoAttribute info, LGGraph graph)
         {
             if (info.HasMultipleOutputs)
             {

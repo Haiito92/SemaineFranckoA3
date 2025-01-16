@@ -1,14 +1,13 @@
-using System;
 using UnityEngine;
 
-namespace LittleDialogue.Runtime
+namespace LittleGraph.Runtime
 {
-    public class LDGraphObject : MonoBehaviour
+    public class LGGraphObject : MonoBehaviour
     {
         [SerializeField]
-        private LDGraph m_graph;
+        private LGGraph m_graph;
 
-        private LDGraph m_graphInstance;
+        private LGGraph m_graphInstance;
         
         private void OnEnable()
         {
@@ -24,7 +23,7 @@ namespace LittleDialogue.Runtime
 
         private void RegisterEvents()
         {
-            foreach (LDNode node in m_graphInstance.Nodes)
+            foreach (LGNode node in m_graphInstance.Nodes)
             {
                 node.ReceivedFlow += OnReceivedFlowAction;
                 node.Executed += OnExecutedAction;
@@ -49,7 +48,7 @@ namespace LittleDialogue.Runtime
 
         private void UnRegisterEvents()
         {
-            foreach (LDNode node in m_graphInstance.Nodes)
+            foreach (LGNode node in m_graphInstance.Nodes)
             {
                 node.ReceivedFlow -= OnReceivedFlowAction;
                 node.Executed -= OnExecutedAction;
@@ -61,20 +60,20 @@ namespace LittleDialogue.Runtime
         {
             m_graphInstance.Init();
             
-            LDNode startNode = m_graphInstance.GetStartNode();
+            LGNode startNode = m_graphInstance.GetStartNode();
 
             startNode.ReceiveFlow();
             
             //ProcessAndMoveToNextNode(startNode);
         }
 
-        private void ProcessAndMoveToNextNode(LDNode currentNode)
+        private void ProcessAndMoveToNextNode(LGNode currentNode)
         {
             string nextNodeId = currentNode.OnProcess(m_graphInstance);
 
             if (!string.IsNullOrEmpty(nextNodeId))
             {
-                LDNode nextNode = m_graphInstance.GetNode(nextNodeId);
+                LGNode nextNode = m_graphInstance.GetNode(nextNodeId);
                 
                 ProcessAndMoveToNextNode(nextNode);
             }

@@ -1,9 +1,8 @@
 using System;
-using UnityEngine;
 
-namespace LittleDialogue.Runtime.Attributes
+namespace LittleGraph.Runtime.Attributes
 {
-    public class LDNodeInfoAttribute : Attribute
+    public class LGNodeInfoAttribute : Attribute
     {
         private string m_nodeTitle;
         private string m_menuItem;
@@ -17,7 +16,7 @@ namespace LittleDialogue.Runtime.Attributes
         public bool HasFlowOutput => m_hasFlowOutput;
         public bool HasMultipleOutputs => m_hasMultipleOutputs;
 
-        public LDNodeInfoAttribute(string title, string menuItem = "", bool hasFlowInput = true, bool hasFlowOutput = true, bool hasMultipleOutputs = false)
+        public LGNodeInfoAttribute(string title, string menuItem = "", bool hasFlowInput = true, bool hasFlowOutput = true, bool hasMultipleOutputs = false)
         {
             m_nodeTitle = title;
             m_menuItem = menuItem;

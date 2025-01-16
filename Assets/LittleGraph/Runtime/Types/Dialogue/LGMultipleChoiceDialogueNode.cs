@@ -1,12 +1,11 @@
-using System.Reflection;
-using LittleDialogue.Runtime.Attributes;
+using LittleGraph.Runtime.Attributes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace LittleDialogue.Runtime.Types.Dialogue
+namespace LittleGraph.Runtime.Types.Dialogue
 {
-    [LDNodeInfo("Multiple Choice Dialogue", "Dialogue/Multiple Choice", true, true, true)]
-    public class LDMultipleChoiceDialogueNode : LDNode
+    [LGNodeInfo("Multiple Choice Dialogue", "Dialogue/Multiple Choice", true, true, true)]
+    public class LGMultipleChoiceDialogueNode : LGNode
     {
         [ExposedProperty()] public GameObject DialogueBoxPrefab;
         

@@ -1,7 +1,6 @@
 using System;
-using UnityEngine;
 
-namespace LittleDialogue.Runtime.Attributes
+namespace LittleGraph.Runtime.Attributes
 {
     public class ExposedPropertyAttribute : Attribute
     {

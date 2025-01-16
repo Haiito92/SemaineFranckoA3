@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace LittleDialogue.Editor.Utilities
+namespace LittleGraph.Editor.Utilities
 {
     public static class UIElementsExtension
     {

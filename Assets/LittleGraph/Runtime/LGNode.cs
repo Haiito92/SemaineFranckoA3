@@ -1,35 +1,33 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
-using LittleDialogue.Runtime.Attributes;
-using NUnit.Framework;
+using LittleGraph.Runtime.Attributes;
 using UnityEngine;
 
-namespace LittleDialogue.Runtime
+namespace LittleGraph.Runtime
 {
     [System.Serializable]
-    public abstract class LDNode
+    public abstract class LGNode
     {
         [SerializeField] private string m_guid;
         [SerializeField] private Rect m_position;
 
-        [SerializeField/*, HideInInspector*/] protected List<LDConnection> m_nodeConnections;
+        [SerializeField/*, HideInInspector*/] protected List<LGConnection> m_nodeConnections;
         
         public string TypeName;
         public string ID => m_guid;
         public Rect Position => m_position;
 
-        public List<LDConnection> NodeConnections => m_nodeConnections;
+        public List<LGConnection> NodeConnections => m_nodeConnections;
 
         public Action ReceivedFlow;
         public Action Executed;
         public Action<string> EmittedFlow;
         
-        public LDNode()
+        public LGNode()
         {
             NewGUID();
-            m_nodeConnections = new List<LDConnection>();
+            m_nodeConnections = new List<LGConnection>();
         }
 
         private void NewGUID()
@@ -59,19 +57,19 @@ namespace LittleDialogue.Runtime
             EmittedFlow?.Invoke(nextNodeId);
         }
         
-        public virtual string OnProcess(LDGraph currentGraph)
+        public virtual string OnProcess(LGGraph currentGraph)
         {
             if(m_nodeConnections.Count <= 0) return string.Empty;
             
-            LDNodeInfoAttribute nodeInfoAttribute = TypeName.GetType().GetCustomAttribute<LDNodeInfoAttribute>();
+            LGNodeInfoAttribute nodeInfoAttribute = TypeName.GetType().GetCustomAttribute<LGNodeInfoAttribute>();
             if (nodeInfoAttribute.HasMultipleOutputs)
             {
                 return string.Empty;
             }
             else
             {
-                LDConnection connection = m_nodeConnections.Find(x => x.OutputPort.NodeId == ID);
-                LDNode nextNodeInFlow = currentGraph.GetNodeFromOutput(m_guid, connection.OutputPort.PortIndex);
+                LGConnection connection = m_nodeConnections.Find(x => x.OutputPort.NodeId == ID);
+                LGNode nextNodeInFlow = currentGraph.GetNodeFromOutput(m_guid, connection.OutputPort.PortIndex);
                 if (nextNodeInFlow != null)
                 {
                     return nextNodeInFlow.ID;

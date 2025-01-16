@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using LittleDialogue.Runtime;
-using LittleDialogue.Runtime.Attributes;
+using LittleGraph.Runtime;
+using LittleGraph.Runtime.Attributes;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace LittleDialogue.Editor
+namespace LittleGraph.Editor
 {
     public struct SearchContextElement
     {
@@ -21,9 +21,9 @@ namespace LittleDialogue.Editor
             Title = title;
         }
     }
-    public class LDWindowSearchProvider : ScriptableObject, ISearchWindowProvider
+    public class LGWindowSearchProvider : ScriptableObject, ISearchWindowProvider
     {
-        public LDGraphView GraphView;
+        public LGGraphView GraphView;
         public VisualElement Target;
 
         public static List<SearchContextElement> elements;
@@ -50,10 +50,10 @@ namespace LittleDialogue.Editor
                 {
                     if (type.CustomAttributes.ToList() != null)
                     {
-                        var attribute = type.GetCustomAttribute(typeof(LDNodeInfoAttribute));
+                        var attribute = type.GetCustomAttribute(typeof(LGNodeInfoAttribute));
                         if (attribute != null)
                         {
-                            LDNodeInfoAttribute att = (LDNodeInfoAttribute)attribute;
+                            LGNodeInfoAttribute att = (LGNodeInfoAttribute)attribute;
                             var node = Activator.CreateInstance(type);
                             if(string.IsNullOrEmpty(att.MenuItem)){continue;}
                             elements.Add(new SearchContextElement(node, att.MenuItem));
@@ -120,7 +120,7 @@ namespace LittleDialogue.Editor
 
             SearchContextElement element = (SearchContextElement)SearchTreeEntry.userData;
 
-            LDNode node = (LDNode)element.Target;
+            LGNode node = (LGNode)element.Target;
             node.SetPosition(new Rect(graphMousePosition, new Vector2()));
             GraphView.Add(node);
             

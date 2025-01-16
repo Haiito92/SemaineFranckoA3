@@ -1,4 +1,4 @@
-LDGraphView{
+LGGraphView{
     flex-grow: 1;
 }
 #Grid

@@ -1,10 +1,10 @@
-using LittleDialogue.Runtime.Attributes;
+using LittleGraph.Runtime.Attributes;
 using UnityEngine;
 
-namespace LittleDialogue.Runtime.Types
+namespace LittleGraph.Runtime.Types
 {
-    [LDNodeInfo("Debug Log", "Debug/Debug Log")]
-    public class LDDebugLogNode : LDNode
+    [LGNodeInfo("Debug Log", "Debug/Debug Log")]
+    public class LGDebugLogNode : LGNode
     {
         [ExposedProperty()]
         public string LogMessage;
@@ -13,13 +13,13 @@ namespace LittleDialogue.Runtime.Types
         {
             Debug.Log(LogMessage);
             
-            LDConnection connection = NodeConnections.Find(x => x.OutputPort.NodeId == ID);
+            LGConnection connection = NodeConnections.Find(x => x.OutputPort.NodeId == ID);
             EmitFlow(connection.InputPort.NodeId);
             
             base.ExecuteNode();
         }
 
-        public override string OnProcess(LDGraph currentGraph)
+        public override string OnProcess(LGGraph currentGraph)
         {
             Debug.Log(LogMessage);
             

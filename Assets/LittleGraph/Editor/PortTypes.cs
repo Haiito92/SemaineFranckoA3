@@ -1,6 +1,4 @@
-using UnityEngine;
-
-namespace LittleDialogue.Editor
+namespace LittleGraph.Editor
 {
     public class PortTypes
     {

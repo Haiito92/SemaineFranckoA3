@@ -1,20 +1,20 @@
-using LittleDialogue.Runtime;
+using LittleGraph.Runtime;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 
-namespace LittleDialogue.Editor
+namespace LittleGraph.Editor
 {
-    [CustomEditor(typeof(LDGraph))]
-    public class LDGraphEditor : UnityEditor.Editor
+    [CustomEditor(typeof(LGGraph))]
+    public class LGGraphEditor : UnityEditor.Editor
     {
         [OnOpenAsset]
         public static bool OnOpenAsset(int instanceId, int index)
         {
             Object asset = EditorUtility.InstanceIDToObject(instanceId);
-            if (asset.GetType() == typeof(LDGraph))
+            if (asset.GetType() == typeof(LGGraph))
             {
-                LDEditorWindow.Open((LDGraph)asset);
+                LGEditorWindow.Open((LGGraph)asset);
                 return true;
             }
 
@@ -25,7 +25,7 @@ namespace LittleDialogue.Editor
         {
             if (GUILayout.Button("Open"))
             {
-                LDEditorWindow.Open((LDGraph)target);
+                LGEditorWindow.Open((LGGraph)target);
             }
         }
     }

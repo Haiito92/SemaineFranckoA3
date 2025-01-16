@@ -1,22 +1,22 @@
-using LittleDialogue.Runtime.Attributes;
+using LittleGraph.Runtime.Attributes;
 using UnityEngine;
 
-namespace LittleDialogue.Runtime.Types
+namespace LittleGraph.Runtime.Types
 {
-    [LDNodeInfo("Start", "Process/Start", false, true)]
-    public class LDStartNode : LDNode
+    [LGNodeInfo("Start", "Process/Start", false, true)]
+    public class LGStartNode : LGNode
     {
         protected override void ExecuteNode()
         {
             Debug.Log("Execute Start Node");
 
             Debug.Log( m_nodeConnections.Count);
-            LDConnection connection = m_nodeConnections.Find(x => x.OutputPort.NodeId == ID);
+            LGConnection connection = m_nodeConnections.Find(x => x.OutputPort.NodeId == ID);
             EmitFlow(connection.InputPort.NodeId);
             base.ExecuteNode();
         }
 
-        public override string OnProcess(LDGraph currentGraph)
+        public override string OnProcess(LGGraph currentGraph)
         {
             Debug.Log("Start Node");
 

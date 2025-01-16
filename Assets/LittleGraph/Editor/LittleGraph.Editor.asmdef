@@ -1,5 +1,5 @@
 {
-    "name": "LittleDialogue.Editor",
+    "name": "LittleGraph.Editor",
     "rootNamespace": "",
     "references": [
         "GUID:c6a25c179422a4d4ba7dd96cf207fe83"
