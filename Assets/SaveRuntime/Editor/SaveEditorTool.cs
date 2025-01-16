@@ -12,20 +12,24 @@ namespace SaveRuntime.Editor
 {
     public class SaveEditorTool : EditorWindow
     {
+        ////Fields
+        //window
         private static SaveEditorTool _window;
 
+        //so
         private SaveDataBehaviour _currentDataBehaviour;
         
         private List<Type> _allTypes = new List<Type>();
         
         private Dictionary<string, bool> _foldoutProperties = new Dictionary<string, bool>();
-        private Dictionary<string, SaveDataBehaviourStruct> _fieldCheckProperties = new Dictionary<string, SaveDataBehaviourStruct>();
         private List<SaveDataBehaviourStruct> _fieldCheckList = new List<SaveDataBehaviourStruct>();
         private FieldInfo[] _tempFieldsInfo;
     
+        //Scroll Position
         private Vector2 _scrollView = Vector2.zero;
         
-        [MenuItem("Window/SaveEditorTool")]
+        ////Functions
+        [MenuItem("EditorToolWindow/SaveEditorTool(do not use atm)")]
         public static void ShowWindow()
         {
             if (!_window)
@@ -35,15 +39,19 @@ namespace SaveRuntime.Editor
             }
             // TODO - SetWindowSize
         }
+        
+        //Current Data Behaviour Loaded on Customized Show Windows (only on SO -> see SaveDataEditor)
         public static void ShowWindow(SaveDataBehaviour dataBehaviour)
         {
             if (!_window)
             {
                 _window = GetWindow<SaveEditorTool>("SaveEditorTool");
+                //Load current Data
                 _window.Load(dataBehaviour);
             }
-
+            // TODO - SetWindowSize
         }
+        
         private void Load(SaveDataBehaviour dataBehaviour)
         {
             _currentDataBehaviour = dataBehaviour;
@@ -52,20 +60,37 @@ namespace SaveRuntime.Editor
     
         private void OnGUI()
         {
+            //Main Layout
             GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Press To Scan All Classes", GUILayout.MinWidth(125));
-            if(GUILayout.Button("SCAN"))
+            EditorGUILayout.LabelField("Press to get all scripts : ", GUILayout.MinWidth(125));
+            if(GUILayout.Button("Press Here"))
             {
-                _allTypes = GetAssemblyClasses();
+                _allTypes = GetAssemblyClasses(); //Get Types
+
+                //Update SO
+                foreach (var type in _allTypes)
+                {
+                    List<SaveDataBehaviourStruct> newFieldForTypeT = new List<SaveDataBehaviourStruct>();
+                    foreach (var fieldInfo in type.GetFields())
+                    {
+                        newFieldForTypeT.Add(new SaveDataBehaviourStruct(fieldInfo.Name, false));
+                    }
+                    SaveDataBehaviourTypeStruct newSaveDataTypeStruct = new SaveDataBehaviourTypeStruct(type.Name, type,newFieldForTypeT);
+                    UpdateSo(_currentDataBehaviour, newSaveDataTypeStruct);
+                }
             }
             GUILayout.EndHorizontal();
             GUILayout.BeginVertical();
+            //
             
+            //ScrollView
             _scrollView = EditorGUILayout.BeginScrollView(_scrollView, GUILayout.Height(800));
+            
             if (_allTypes != null && _allTypes.Count > 0)
             {
                 foreach (var type in _allTypes)
                 {
+                   
                     if (_foldoutProperties.ContainsKey(type.Name))
                     {
                         _foldoutProperties[type.Name] = EditorGUILayout.Foldout(_foldoutProperties[type.Name], type.Name);
@@ -93,17 +118,6 @@ namespace SaveRuntime.Editor
                                     EditorGUILayout.LabelField($"{f.Name} ({f.FieldType.Name})");
                                     EditorGUILayout.EndHorizontal();
                                 }
-                                
-                                // if (_fieldCheckProperties.ContainsKey(f.Name))
-                                // {
-                                //     EditorGUILayout.BeginHorizontal();
-                                //     // SaveDataBehaviourStruct t = _fieldCheckProperties[f.Name];
-                                //     // t.IsChecked = EditorGUILayout.Toggle("",_fieldCheckProperties[f.Name].IsChecked);
-                                //     // _fieldCheckProperties[f.Name] = t;
-                                //     _fieldCheckProperties[f.Name] = SaveDataBehaviourStruct.SetCheck(_fieldCheckProperties[f.Name], EditorGUILayout.Toggle("", _fieldCheckProperties[f.Name].IsChecked));
-                                //     EditorGUILayout.LabelField($"{f.Name} ({f.FieldType.Name})");
-                                //     EditorGUILayout.EndHorizontal();
-                                // }
                             }
                         }
                     }
@@ -119,6 +133,8 @@ namespace SaveRuntime.Editor
 
                 }
             }
+            //
+            
             EditorGUILayout.EndScrollView();
             GUILayout.EndVertical();
         }
@@ -152,13 +168,13 @@ namespace SaveRuntime.Editor
         /**
          * UpdateSo
          * <param name="currentSo"></param>
+         * <param name="currentTypeStruct"></param>
          */
         public void UpdateSo(SaveDataBehaviour currentSo, SaveDataBehaviourTypeStruct currentTypeStruct)
         {
-            int currentTypeIndexInSo = -1;
             if (currentSo.ListOfType.IndexOf(currentTypeStruct) != -1)
             {
-                currentTypeIndexInSo = currentSo.ListOfType.IndexOf(currentTypeStruct);
+                var currentTypeIndexInSo = currentSo.ListOfType.IndexOf(currentTypeStruct);
 
                 currentSo.ListOfType[currentTypeIndexInSo] = currentTypeStruct;
             }
