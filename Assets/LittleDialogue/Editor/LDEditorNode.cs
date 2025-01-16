@@ -22,13 +22,22 @@ namespace LittleDialogue.Editor
         private SerializedProperty m_serializedProperty;
         
         public LDNode Node => m_node;
+        public List<Port> OutputPorts
+        {
+            get => m_outputPorts;
+            set => m_outputPorts = value;
+        }
         public List<Port> Ports => m_ports;
+
+        public event Action<LDEditorNode> OutputRemovedAction; 
         
         public LDEditorNode(LDNode node, SerializedObject graphObject)
         {
             this.AddToClassList("ld-node");
 
             m_serializedObject = graphObject;
+            LDGraph graph = (LDGraph)graphObject.targetObject;
+            
             m_node = node;
             Type typeInfo = node.GetType();
             LDNodeInfoAttribute info = typeInfo.GetCustomAttribute<LDNodeInfoAttribute>();
@@ -46,7 +55,8 @@ namespace LittleDialogue.Editor
             
             this.name = typeInfo.Name;
 
-            DrawTitleButtons(info);
+            DrawTitleButtons(info, graph);
+            
             if (info.HasFlowInput)
             {
                 CreateFlowInputPort();
@@ -70,12 +80,12 @@ namespace LittleDialogue.Editor
             RefreshExpandedState();
         }
 
-        private void DrawTitleButtons(LDNodeInfoAttribute info)
+        private void DrawTitleButtons(LDNodeInfoAttribute info, LDGraph graph)
         {
             if (info.HasMultipleOutputs)
             {
                 titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Plus",OnAddOutput));
-                titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Minus"));
+                titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Minus",OnRemoveOuput));
             }
         }
 
@@ -83,11 +93,12 @@ namespace LittleDialogue.Editor
         {
             CreateFlowOutputPort();
         }
-        private void OnRemoveOutput()
-        {
-            //Create function for removing output
-        }
 
+        private void OnRemoveOuput()
+        {
+            OutputRemovedAction?.Invoke(this);
+        }
+        
         private void CreateFlowInputPort()
         {
             Port inputPort = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single,

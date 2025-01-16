@@ -14,7 +14,7 @@ namespace LittleDialogue.Runtime
         [SerializeField] private string m_guid;
         [SerializeField] private Rect m_position;
 
-        [SerializeField, HideInInspector] protected List<LDConnection> m_nodeConnections;
+        [SerializeField/*, HideInInspector*/] protected List<LDConnection> m_nodeConnections;
         
         public string TypeName;
         public string ID => m_guid;

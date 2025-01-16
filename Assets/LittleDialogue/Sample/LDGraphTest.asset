@@ -13,87 +13,69 @@ MonoBehaviour:
   m_Name: LDGraphTest
   m_EditorClassIdentifier: 
   m_nodes:
-  - rid: 8417688746770563239
-  - rid: 8417688746770563240
-  - rid: 8417688746770563252
+  - rid: 8417688769891663948
+  - rid: 8417688769891663952
+  - rid: 8417688769891663953
   m_connections:
   - InputPort:
-      NodeId: 0524b2d1-bd44-4493-acda-ed1f18ac1d83
+      NodeId: c8edce4b-bb63-493a-a17d-cfe918581851
       PortIndex: 0
     OutputPort:
-      NodeId: 730eaed9-aec4-45b8-a961-c0ca6a06b131
+      NodeId: 6caed3c5-6ddb-46af-9d81-be3f384183ac
       PortIndex: 0
-  - InputPort:
-      NodeId: e9d81ac4-820f-4fee-9a7e-9dbe53ed3d59
-      PortIndex: 0
-    OutputPort:
-      NodeId: 0524b2d1-bd44-4493-acda-ed1f18ac1d83
-      PortIndex: 1
   references:
     version: 2
     RefIds:
-    - rid: 8417688746770563239
+    - rid: 8417688769891663948
       type: {class: LDStartNode, ns: LittleDialogue.Runtime.Types, asm: LittleDialogue.Runtime}
       data:
-        m_guid: 730eaed9-aec4-45b8-a961-c0ca6a06b131
+        m_guid: 6caed3c5-6ddb-46af-9d81-be3f384183ac
         m_position:
           serializedVersion: 2
-          x: 202.40001
-          y: 124
-          width: 0
-          height: 0
+          x: 116.799995
+          y: 139.2
+          width: 75.200005
+          height: 76.8
         m_nodeConnections:
         - InputPort:
-            NodeId: 0524b2d1-bd44-4493-acda-ed1f18ac1d83
+            NodeId: c8edce4b-bb63-493a-a17d-cfe918581851
             PortIndex: 0
           OutputPort:
-            NodeId: 730eaed9-aec4-45b8-a961-c0ca6a06b131
+            NodeId: 6caed3c5-6ddb-46af-9d81-be3f384183ac
             PortIndex: 0
         TypeName: LittleDialogue.Runtime.Types.LDStartNode, LittleDialogue.Runtime,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    - rid: 8417688746770563240
-      type: {class: LDDebugLogNode, ns: LittleDialogue.Runtime.Types, asm: LittleDialogue.Runtime}
-      data:
-        m_guid: 0524b2d1-bd44-4493-acda-ed1f18ac1d83
-        m_position:
-          serializedVersion: 2
-          x: 308
-          y: 124
-          width: 148
-          height: 95.2
-        m_nodeConnections:
-        - InputPort:
-            NodeId: 0524b2d1-bd44-4493-acda-ed1f18ac1d83
-            PortIndex: 0
-          OutputPort:
-            NodeId: 730eaed9-aec4-45b8-a961-c0ca6a06b131
-            PortIndex: 0
-        - InputPort:
-            NodeId: e9d81ac4-820f-4fee-9a7e-9dbe53ed3d59
-            PortIndex: 0
-          OutputPort:
-            NodeId: 0524b2d1-bd44-4493-acda-ed1f18ac1d83
-            PortIndex: 1
-        TypeName: LittleDialogue.Runtime.Types.LDDebugLogNode, LittleDialogue.Runtime,
-          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        LogMessage: Debug One
-    - rid: 8417688746770563252
+    - rid: 8417688769891663952
       type: {class: LDMultipleChoiceDialogueNode, ns: LittleDialogue.Runtime.Types.Dialogue, asm: LittleDialogue.Runtime}
       data:
-        m_guid: e9d81ac4-820f-4fee-9a7e-9dbe53ed3d59
+        m_guid: c8edce4b-bb63-493a-a17d-cfe918581851
         m_position:
           serializedVersion: 2
-          x: 515.2
-          y: 124
+          x: 248
+          y: 139.2
           width: 271.2
           height: 96.8
         m_nodeConnections:
         - InputPort:
-            NodeId: e9d81ac4-820f-4fee-9a7e-9dbe53ed3d59
+            NodeId: c8edce4b-bb63-493a-a17d-cfe918581851
             PortIndex: 0
           OutputPort:
-            NodeId: 0524b2d1-bd44-4493-acda-ed1f18ac1d83
-            PortIndex: 1
+            NodeId: 6caed3c5-6ddb-46af-9d81-be3f384183ac
+            PortIndex: 0
         TypeName: LittleDialogue.Runtime.Types.Dialogue.LDMultipleChoiceDialogueNode,
           LittleDialogue.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        DialogueBoxPrefab: {fileID: 9038315491796518429, guid: a192b9cb9830157449eeacacc035bd8b, type: 3}
+        DialogueBoxPrefab: {fileID: 0}
+    - rid: 8417688769891663953
+      type: {class: LDDebugLogNode, ns: LittleDialogue.Runtime.Types, asm: LittleDialogue.Runtime}
+      data:
+        m_guid: fb33cb31-6807-4abc-b43b-e1b1beee2be9
+        m_position:
+          serializedVersion: 2
+          x: 644.8
+          y: 156
+          width: 148
+          height: 95.20001
+        m_nodeConnections: []
+        TypeName: LittleDialogue.Runtime.Types.LDDebugLogNode, LittleDialogue.Runtime,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        LogMessage: 

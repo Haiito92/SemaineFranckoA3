@@ -146,6 +146,7 @@ namespace LittleDialogue.Editor
         {
             m_graph.Nodes.Remove(editorNode.Node);
             m_nodeDictionary.Remove(editorNode.Node.ID);
+            editorNode.OutputRemovedAction -= OnRemoveOutput;
             m_graphNodes.Remove(editorNode);
             m_serializedObject.Update();
         }
@@ -165,6 +166,19 @@ namespace LittleDialogue.Editor
                 
                 m_serializedObject.Update();
             }
+        }
+        
+        public void OnRemoveOutput(LDEditorNode editorNode)
+        {
+            //Create function for removing output
+            if (editorNode.OutputPorts.Count <= 1) return;
+            
+            Port outputPort = editorNode.OutputPorts[^1];
+            
+            DeleteElements(outputPort.connections);
+            
+            editorNode.OutputPorts.Remove(outputPort);
+            editorNode.outputContainer.Remove(outputPort);
         }
         
         private void DrawNodes()
@@ -233,6 +247,7 @@ namespace LittleDialogue.Editor
             editorNode.SetPosition(node.Position);
             m_graphNodes.Add(editorNode);
             m_nodeDictionary.Add(node.ID, editorNode);
+            editorNode.OutputRemovedAction += OnRemoveOutput;
             
             AddElement(editorNode);
         }
