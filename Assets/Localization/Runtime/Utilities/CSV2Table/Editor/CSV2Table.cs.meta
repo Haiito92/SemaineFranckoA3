@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 611e32f3056ea194ba3d08d85c11a67f
+timeCreated: 1431006471
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 36443
+  packageName: CSV2Table
+  packageVersion: 1.0
+  assetPath: Assets/CSV2Table/Editor/CSV2Table.cs
+  uploadId: 62716

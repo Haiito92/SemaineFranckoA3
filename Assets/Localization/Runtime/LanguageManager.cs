@@ -8,6 +8,8 @@ using System;
 using System.Xml;
 using System.Linq;
 using UnityEditor;
+using System.IO;
+using Mono.Cecil;
 
 namespace Localization.Runtime
 {
@@ -15,46 +17,112 @@ namespace Localization.Runtime
     {
         // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-        [SerializeField] LANGUAGES_STATE LANGUAGE;
-        [SerializeField] List<LocalizationData> TextList;
+        private LANGUAGES_STATE LANGUAGE;
+        [SerializeField] public LANGUAGES_STATE LANGUAGEProperty { get { return LANGUAGE; } set { LANGUAGE = value; OnLANGUAGEValueChange.Invoke(); } }
+        [SerializeField] TextAsset _transalationAsset;
+        [SerializeField] List<LocalizationData> _textList;
+        [SerializeField] CSV_TextTable translationTable = new CSV_TextTable();
 
+        private Action OnLANGUAGEValueChange;
+
+        private void Awake()
+        {
+            translationTable.Load(_transalationAsset);
+        }
+
+        private void OnEnable()
+        {
+            OnLANGUAGEValueChange += TranslateAllTexts;
+        }
+
+        private void OnDisable()
+        {
+            OnLANGUAGEValueChange -= TranslateAllTexts;
+        }
+
+        private void Start()
+        {
+            TranslateAllTexts();
+        }
 
         public void AddTextToList()
         {
             MaskableGraphic[] maskableGraphics = FindObjectsByType<MaskableGraphic>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            
+            _textList.Clear();
 
             foreach (MaskableGraphic mg in maskableGraphics)
             {
                 switch (mg)
                 {
-                    case TMP_Text tmpText: TextList.Add(new LocalizationData(tmpText.text)); break;
-                    case Text text: TextList.Add(new LocalizationData(text.text)); break;
+                    case TMP_Text tmpText: 
+                        if(!CheckForDuplicateInList(tmpText))
+                            _textList.Add(new LocalizationData(tmpText)); 
+                        break;
+                    case Text text: 
+                        if(!CheckForDuplicateInList(text))
+                            _textList.Add(new LocalizationData(text)); 
+                        break;
                 }
             }
-
-            //if(gameObject.TryGetComponent(out TMP_Text tmpTextComponent)) TextList.Add(new LocalizationData(tmpTextComponent.text));
-            //if(gameObject.TryGetComponent(out Text textComponent)) TextList.Add(new LocalizationData(textComponent.text));
         }
 
-
-        /*private void GetChildrenRecursively(GameObject[] parentsGameobjects)
+        private void TranslateAllTexts()
         {
-            foreach (GameObject currentGameobject in parentsGameobjects)
+            foreach (LocalizationData data in _textList)
             {
-                Debug.Log($"{currentGameobject.name}");
-                if (currentGameobject.transform.childCount <= 0) continue;
-
-                GameObject[] childrenArray = new GameObject[currentGameobject.transform.childCount];
-
-                for (int i = 0; i < currentGameobject.transform.childCount; i++)
+                for (int i = 0; i < translationTable.NumRows(); i++)
                 {
-                    childrenArray[i] = currentGameobject.transform.GetChild(i).gameObject;
+                    if (data.Key == translationTable.GetRowList()[i].Key)
+                    {
+                        switch (data.TextComponent)
+                        {
+                            case TMP_Text tmpText:
+                                switch (LANGUAGE)
+                                {
+                                    case LANGUAGES_STATE.ENGLISH:
+                                        tmpText.text = translationTable.GetRowList()[i].en;
+                                        break;
+                                    case LANGUAGES_STATE.FRENCH:
+                                        tmpText.text = translationTable.GetRowList()[i].fr;
+                                        break;
+                                }
+                                break;
+                            case Text text:
+                                switch (LANGUAGE)
+                                {
+                                    case LANGUAGES_STATE.ENGLISH:
+                                        text.text = translationTable.GetRowList()[i].en;
+                                        break;
+
+                                    case LANGUAGES_STATE.FRENCH:
+                                        text.text = translationTable.GetRowList()[i].fr;
+                                        break;
+                                }
+                                break;
+                        }
+                    }
                 }
-
-                GetChildrenRecursively(childrenArray);
-
-                //AddTextToList(currentGameobject);
             }
-        }*/
+        }
+
+        private bool CheckForDuplicateInList(Component component)
+        {
+            foreach(LocalizationData data in _textList)
+            {
+                if(data.TextComponent == component)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+#if UNITY_EDITOR
+        public void ClearTextList()
+        {
+            _textList.Clear();
+        }
+#endif
     }
 }

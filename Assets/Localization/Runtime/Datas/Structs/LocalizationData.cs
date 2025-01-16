@@ -1,18 +1,18 @@
 using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 [Serializable]
 public struct LocalizationData
 {
     public string Key;
-    public string Guid;
-    public string Content;
+    public Component TextComponent;
 
-    public LocalizationData(string newContent, string newKey = "")
+    public LocalizationData(Component newComponent,  string newKey = "")
     {
         Key = newKey;
-        Guid = System.Guid.NewGuid().ToString();
-        Content = newContent;
+        TextComponent = newComponent;      
     }
 
 }
