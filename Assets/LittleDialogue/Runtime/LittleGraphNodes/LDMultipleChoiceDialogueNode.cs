@@ -3,7 +3,7 @@ using LittleGraph.Runtime.Attributes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace LittleDialogue.AddOns.LittleGraph
+namespace LittleDialogue.Runtime.LittleGraphNodes
 {
 #if LITTLE_GRAPH
     [LGNodeInfo("Multiple Choice Dialogue", "Little Dialogue/Multiple Choice Dialogue")]
