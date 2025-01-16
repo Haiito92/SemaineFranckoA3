@@ -17,11 +17,12 @@ namespace Localization.Runtime
     {
         // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-        private LANGUAGES_STATE LANGUAGE;
-        [SerializeField] public LANGUAGES_STATE LANGUAGEProperty { get { return LANGUAGE; } set { LANGUAGE = value; OnLANGUAGEValueChange.Invoke(); } }
+        [SerializeField] private LANGUAGES_STATE LANGUAGE;
         [SerializeField] TextAsset _transalationAsset;
         [SerializeField] List<LocalizationData> _textList;
         [SerializeField] CSV_TextTable translationTable = new CSV_TextTable();
+
+        public LANGUAGES_STATE LANGUAGEProperty { get { return LANGUAGE; } set { LANGUAGE = value; OnLANGUAGEValueChange.Invoke(); } }
 
         private Action OnLANGUAGEValueChange;
 
