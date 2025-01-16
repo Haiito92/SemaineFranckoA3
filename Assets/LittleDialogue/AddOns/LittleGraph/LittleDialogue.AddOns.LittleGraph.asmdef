@@ -1,8 +1,8 @@
 {
-    "name": "Francko.Editor",
+    "name": "LittleDialogue.AddOns.LittleGraph",
     "rootNamespace": "",
     "references": [
-        "GUID:f0907aab11e1afc42ba6253089373b3b"
+        "GUID:c6a25c179422a4d4ba7dd96cf207fe83"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -11,12 +11,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "Select...",
-            "expression": "",
-            "define": ""
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }

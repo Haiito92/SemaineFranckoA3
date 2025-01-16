@@ -1,22 +1,18 @@
 {
-    "name": "Francko.Editor",
+    "name": "LittleDialogue.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:f0907aab11e1afc42ba6253089373b3b"
+        "GUID:90d0a610f03bce142a2898f9aa3bbc6f"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "Select...",
-            "expression": "",
-            "define": ""
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }

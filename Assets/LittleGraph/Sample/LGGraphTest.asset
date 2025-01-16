@@ -13,54 +13,54 @@ MonoBehaviour:
   m_Name: LGGraphTest
   m_EditorClassIdentifier: 
   m_nodes:
-  - rid: 8417688771279978567
-  - rid: 8417688771279978568
+  - rid: 8417688773225611354
+  - rid: 8417688773225611360
   m_connections:
   - InputPort:
-      NodeId: 15864e5e-6551-47ea-95e9-dfaccd17376a
+      NodeId: 3770ab05-c053-4b95-aa6d-77c8b43e0051
       PortIndex: 0
     OutputPort:
-      NodeId: 2f0be66f-ec32-4df1-8305-bcef252e670b
+      NodeId: 1c654990-e838-4ea1-8af4-48345b77e8d6
       PortIndex: 0
   references:
     version: 2
     RefIds:
-    - rid: 8417688771279978567
+    - rid: 8417688773225611354
       type: {class: LGStartNode, ns: LittleGraph.Runtime.Types, asm: LittleGraph.Runtime}
       data:
-        m_guid: 2f0be66f-ec32-4df1-8305-bcef252e670b
+        m_guid: 1c654990-e838-4ea1-8af4-48345b77e8d6
         m_position:
           serializedVersion: 2
-          x: 64
-          y: 159.2
-          width: 75.2
-          height: 76.8
+          x: 127
+          y: 246
+          width: 74
+          height: 77
         m_nodeConnections:
         - InputPort:
-            NodeId: 15864e5e-6551-47ea-95e9-dfaccd17376a
+            NodeId: 3770ab05-c053-4b95-aa6d-77c8b43e0051
             PortIndex: 0
           OutputPort:
-            NodeId: 2f0be66f-ec32-4df1-8305-bcef252e670b
+            NodeId: 1c654990-e838-4ea1-8af4-48345b77e8d6
             PortIndex: 0
         TypeName: LittleGraph.Runtime.Types.LGStartNode, LittleGraph.Runtime, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-    - rid: 8417688771279978568
-      type: {class: LGMultipleChoiceDialogueNode, ns: LittleGraph.Runtime.Types.Dialogue, asm: LittleGraph.Runtime}
+    - rid: 8417688773225611360
+      type: {class: LDMultipleChoiceDialogueNode, ns: LittleDialogue.AddOns.LittleGraph, asm: LittleDialogue.AddOns.LittleGraph}
       data:
-        m_guid: 15864e5e-6551-47ea-95e9-dfaccd17376a
+        m_guid: 3770ab05-c053-4b95-aa6d-77c8b43e0051
         m_position:
           serializedVersion: 2
-          x: 192
-          y: 176.8
-          width: 271.2
-          height: 96.8
+          x: 264
+          y: 260
+          width: 0
+          height: 0
         m_nodeConnections:
         - InputPort:
-            NodeId: 15864e5e-6551-47ea-95e9-dfaccd17376a
+            NodeId: 3770ab05-c053-4b95-aa6d-77c8b43e0051
             PortIndex: 0
           OutputPort:
-            NodeId: 2f0be66f-ec32-4df1-8305-bcef252e670b
+            NodeId: 1c654990-e838-4ea1-8af4-48345b77e8d6
             PortIndex: 0
-        TypeName: LittleGraph.Runtime.Types.Dialogue.LGMultipleChoiceDialogueNode,
-          LittleGraph.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        DialogueBoxPrefab: {fileID: 0}
+        TypeName: LittleDialogue.AddOns.LittleGraph.LDMultipleChoiceDialogueNode,
+          LittleDialogue.AddOns.LittleGraph, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        DialogueBoxPrefab: {fileID: 9038315491796518429, guid: a192b9cb9830157449eeacacc035bd8b, type: 3}
