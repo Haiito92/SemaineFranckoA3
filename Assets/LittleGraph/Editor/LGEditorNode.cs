@@ -7,13 +7,16 @@ using LittleGraph.Runtime.Attributes;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
+using Button = UnityEngine.UIElements.Button;
 
 namespace LittleGraph.Editor
 {
     public class LGEditorNode : Node
     {
         private LGNode m_node;
+        private LGNodeInfoAttribute m_nodeInfos;
         private List<Port> m_outputPorts;
         private List<Port> m_ports;
 
@@ -39,14 +42,14 @@ namespace LittleGraph.Editor
             
             m_node = node;
             Type typeInfo = node.GetType();
-            LGNodeInfoAttribute info = typeInfo.GetCustomAttribute<LGNodeInfoAttribute>();
+            m_nodeInfos = typeInfo.GetCustomAttribute<LGNodeInfoAttribute>();
 
-            title = info.Title;
+            title = m_nodeInfos.Title;
 
             m_outputPorts = new List<Port>();
             m_ports = new List<Port>();
             
-            string[] depths = info.MenuItem.Split('/');
+            string[] depths = m_nodeInfos.MenuItem.Split('/');
             foreach (string depth in depths)
             {
                 this.AddToClassList(depth.ToLower().Replace(' ', '-'));
@@ -54,17 +57,18 @@ namespace LittleGraph.Editor
             
             this.name = typeInfo.Name;
 
-            DrawTitleButtons(info, graph);
+            DrawTitleButtons(m_nodeInfos, graph);
             
-            if (info.HasFlowInput)
+            if (m_nodeInfos.HasFlowInput)
             {
                 CreateFlowInputPort();
             }
             
             //So output is always index 0 (to be changed later)
-            if (info.HasFlowOutput)
+            if (m_nodeInfos.HasFlowOutput)
             {
-                CreateFlowOutputPort();
+                // info.OutputComplementaryDataType.GetFields()
+                CreateFlowOutputPort(m_nodeInfos);
             }
 
             foreach (FieldInfo property in typeInfo.GetFields())
@@ -90,7 +94,7 @@ namespace LittleGraph.Editor
 
         private void OnAddOutput()
         {
-            CreateFlowOutputPort();
+            CreateFlowOutputPort(m_nodeInfos);
         }
 
         private void OnRemoveOutput()
@@ -108,12 +112,26 @@ namespace LittleGraph.Editor
             inputContainer.Add(inputPort); 
         }
 
-        private void CreateFlowOutputPort()
+        private void CreateFlowOutputPort(LGNodeInfoAttribute nodeInfo)
         {
             Port outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single,
                 typeof(PortTypes.FlowPort));
             outputPort.portName = "Out";
             outputPort.tooltip = "Flow output";
+            
+            if (nodeInfo.OutputComplementaryDataType == typeof(string))
+            {
+                TextField textField = new TextField()
+                {
+                    value = "Out"
+                };
+                // Synchroniser la valeur du champ avec le DialogueText du noeud
+                textField.RegisterValueChangedCallback(evt =>
+                {
+                    outputPort.portName = evt.newValue; // Mettre à jour le DialogueText
+                });
+                outputContainer.Add(textField);
+            }
             
             //Add to editor node
             m_outputPorts.Add(outputPort);

@@ -33,15 +33,23 @@ namespace LittleDialogue.Runtime
             if(!m_dialogueBox) return;
 
             m_dialogueBox.ShowBox();
-
-            if (node is LDSingleChoiceDialogueNode singleChoiceNode)
+            if (node is LDDialogueNode dialogueNode)
             {
-                m_dialogueBox.UpdateText(singleChoiceNode.DialogueText);
+                m_dialogueBox.UpdateText(dialogueNode.DialogueText);
+                m_dialogueBox.UpdateButtonCallback(0, () =>
+                {
+                    node.EmitFlow(node.NodeConnections.Find(connection => connection.OutputPort.NodeId == dialogueNode.ID).InputPort.NodeId);
+                });
             }
-            else if(node is LDMultipleChoiceDialogueNode multipleChoiceNode)
-            {
-                m_dialogueBox.UpdateText(multipleChoiceNode.DialogueText);
-            }
+            // if (node is LDSingleChoiceDialogueNode singleChoiceNode)
+            // {
+            //     
+            //     
+            // }
+            // else if(node is LDMultipleChoiceDialogueNode multipleChoiceNode)
+            // {
+            //     m_dialogueBox.UpdateText(multipleChoiceNode.DialogueText);
+            // }
         }
     }
 }

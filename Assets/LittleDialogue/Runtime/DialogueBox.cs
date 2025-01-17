@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace LittleDialogue.Runtime
@@ -9,11 +11,17 @@ namespace LittleDialogue.Runtime
     {
         [SerializeField] private GameObject m_dialogueBoxPanel;
         [SerializeField] private TextMeshProUGUI m_dialogueText;
+        [SerializeField] private GameObject m_choiceButtonsParent;
         [SerializeField] private List<Button> m_choiceButtons;
 
         // public GameObject DialogueBoxPanel => m_dialogueBoxPanel;
         // public TextMeshProUGUI DialogueText => m_dialogueText;
         // public List<Button> ChoiceButtons => m_choiceButtons;
+
+        private void OnEnable()
+        {
+            
+        }
 
         public void ShowBox()
         {
@@ -24,5 +32,21 @@ namespace LittleDialogue.Runtime
         {
             m_dialogueText.text = newText;
         }
+
+        public void UpdateButtonCallback(int index, UnityAction callback)
+        {
+           if(index > m_choiceButtons.Count - 1) return;
+
+           m_choiceButtons[index].onClick.AddListener(callback);
+        }
+
+        // public void UpdateChoiceButtonTexts(params string[] options)
+        // {
+        //     for (int i = 0; i < options.Length; i++)
+        //     {
+        //         if(i>m_choiceButtons.Count-1) break;
+        //         m_choiceButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = options[i];
+        //     }
+        // }
     }
 }
