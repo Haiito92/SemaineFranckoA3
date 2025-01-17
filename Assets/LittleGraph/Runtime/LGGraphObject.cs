@@ -8,14 +8,20 @@ namespace LittleGraph.Runtime
         private LGGraph m_graph;
 
         private LGGraph m_graphInstance;
-        
+        public LGGraph GraphInstance => m_graphInstance;
         private void OnEnable()
+        {
+            // m_graphInstance = Instantiate(m_graph);
+            // RegisterEvents();
+            //ExecuteAsset();
+        }
+
+        public void Init()
         {
             m_graphInstance = Instantiate(m_graph);
             RegisterEvents();
-            ExecuteAsset();
         }
-
+        
         private void OnDisable()
         {
             UnRegisterEvents();
@@ -23,6 +29,7 @@ namespace LittleGraph.Runtime
 
         private void RegisterEvents()
         {
+            if(m_graphInstance == null) return;
             foreach (LGNode node in m_graphInstance.Nodes)
             {
                 node.ReceivedFlow += OnReceivedFlowAction;
@@ -36,7 +43,7 @@ namespace LittleGraph.Runtime
             //Doing nothing for now
         }
 
-        private void OnExecutedAction()
+        private void OnExecutedAction(LGNode node)
         {
             //Doing nothing for now
         }
@@ -56,7 +63,7 @@ namespace LittleGraph.Runtime
             }
         }
         
-        private void ExecuteAsset()
+        public void ExecuteAsset()
         {
             m_graphInstance.Init();
             
@@ -66,7 +73,7 @@ namespace LittleGraph.Runtime
             
             //ProcessAndMoveToNextNode(startNode);
         }
-
+        
         private void ProcessAndMoveToNextNode(LGNode currentNode)
         {
             string nextNodeId = currentNode.OnProcess(m_graphInstance);

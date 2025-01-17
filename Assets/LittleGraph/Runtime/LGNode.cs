@@ -21,7 +21,7 @@ namespace LittleGraph.Runtime
         public List<LGConnection> NodeConnections => m_nodeConnections;
 
         public Action ReceivedFlow;
-        public Action Executed;
+        public Action<LGNode> Executed;
         public Action<string> EmittedFlow;
         
         public LGNode()
@@ -48,7 +48,7 @@ namespace LittleGraph.Runtime
 
         protected virtual void ExecuteNode()
         {
-            Executed?.Invoke();
+            Executed?.Invoke(this);
         }
         
         public virtual void EmitFlow(string nextNodeId)

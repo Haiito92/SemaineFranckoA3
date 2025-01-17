@@ -3,22 +3,17 @@ using LittleGraph.Runtime.Attributes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace LittleDialogue.Runtime.LittleGraphNodes
+namespace LittleDialogue.Runtime.LittleGraphAddOn
 {
 #if LITTLE_GRAPH
-    [LGNodeInfo("Multiple Choice Dialogue", "Little Dialogue/Multiple Choice Dialogue")]
+    [LGNodeInfo("Multiple Choice Dialogue", "Little Dialogue/Multiple Choice Dialogue", true, true, true)]
     public class LDMultipleChoiceDialogueNode : LGNode
     {
         [ExposedProperty()]
-        public GameObject DialogueBoxPrefab;
+        public string DialogueText;
         
         protected override void ExecuteNode()
         {
-            if (DialogueBoxPrefab)
-            {
-                GameObject.Instantiate(DialogueBoxPrefab, SceneManager.GetActiveScene());   
-            }
-            
             base.ExecuteNode();
         }
     }

@@ -84,7 +84,7 @@ namespace LittleGraph.Editor
             if (info.HasMultipleOutputs)
             {
                 titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Plus",OnAddOutput));
-                titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Minus",OnRemoveOuput));
+                titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Minus",OnRemoveOutput));
             }
         }
 
@@ -93,7 +93,7 @@ namespace LittleGraph.Editor
             CreateFlowOutputPort();
         }
 
-        private void OnRemoveOuput()
+        private void OnRemoveOutput()
         {
             OutputRemovedAction?.Invoke(this);
         }
