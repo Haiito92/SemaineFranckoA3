@@ -9,5 +9,4 @@ using UnityEngine;
 public class SavableAttribute : Attribute
 {
     public bool CanBeModified = true;
-    
 }

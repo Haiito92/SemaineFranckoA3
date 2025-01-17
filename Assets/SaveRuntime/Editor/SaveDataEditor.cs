@@ -9,7 +9,7 @@ public class SaveDataEditor : Editor
     {
         if (GUILayout.Button("Open Save Tool"))
         {
-            SaveEditorTool.ShowWindow((SaveDataBehaviour)serializedObject.targetObject);
+            SaveEditorTool.ShowWindow(serializedObject);
         }
         base.OnInspectorGUI();
     }

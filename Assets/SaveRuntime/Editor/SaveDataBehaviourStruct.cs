@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace SaveRuntime.Editor
 {
+    [System.Serializable]
     public struct SaveDataBehaviourStruct
     {
         public string NameOfField;
@@ -33,17 +34,20 @@ namespace SaveRuntime.Editor
         }
     }
 
+    [System.Serializable]
     public struct SaveDataBehaviourTypeStruct
     {
         public string Name;
+        public int Id;
         public Type TypeOfClass;
         public List<SaveDataBehaviourStruct> ListOfFields;
 
-        public SaveDataBehaviourTypeStruct(string newName, Type newTypeOfClass, List<SaveDataBehaviourStruct> newListOfSaveDataBehaviour)
+        public SaveDataBehaviourTypeStruct(string newName,int id, Type newTypeOfClass, List<SaveDataBehaviourStruct> newListOfSaveDataBehaviour)
         {
             Name = newName;
             TypeOfClass = newTypeOfClass;
             ListOfFields = newListOfSaveDataBehaviour;
+            Id = id;
         }
     }
 }

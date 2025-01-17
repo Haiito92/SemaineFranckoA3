@@ -18,6 +18,7 @@ namespace SaveRuntime.Editor
 
         //so
         private SaveDataBehaviour _currentDataBehaviour;
+        private SerializedObject _serializedObject;
         
         private List<Type> _allTypes = new List<Type>();
         
@@ -41,20 +42,21 @@ namespace SaveRuntime.Editor
         }
         
         //Current Data Behaviour Loaded on Customized Show Windows (only on SO -> see SaveDataEditor)
-        public static void ShowWindow(SaveDataBehaviour dataBehaviour)
+        public static void ShowWindow(SerializedObject serializedObject)
         {
             if (!_window)
             {
                 _window = GetWindow<SaveEditorTool>("SaveEditorTool");
                 //Load current Data
-                _window.Load(dataBehaviour);
+                _window.Load(serializedObject);
             }
             // TODO - SetWindowSize
         }
         
-        private void Load(SaveDataBehaviour dataBehaviour)
+        private void Load(SerializedObject serializedObject)
         {
-            _currentDataBehaviour = dataBehaviour;
+            _serializedObject = serializedObject;
+            _currentDataBehaviour = (SaveDataBehaviour)serializedObject.targetObject;
         }
         
     
@@ -68,71 +70,105 @@ namespace SaveRuntime.Editor
                 _allTypes = GetAssemblyClasses(); //Get Types
 
                 //Update SO
+                int i = -1;
                 foreach (var type in _allTypes)
                 {
+                    i++;
                     List<SaveDataBehaviourStruct> newFieldForTypeT = new List<SaveDataBehaviourStruct>();
-                    foreach (var fieldInfo in type.GetFields())
+                    foreach (var fieldInfo in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
                     {
                         newFieldForTypeT.Add(new SaveDataBehaviourStruct(fieldInfo.Name, false));
                     }
-                    SaveDataBehaviourTypeStruct newSaveDataTypeStruct = new SaveDataBehaviourTypeStruct(type.Name, type,newFieldForTypeT);
+                    SaveDataBehaviourTypeStruct newSaveDataTypeStruct = new SaveDataBehaviourTypeStruct(type.Name,i, type, newFieldForTypeT);
                     UpdateSo(_currentDataBehaviour, newSaveDataTypeStruct);
                 }
             }
             GUILayout.EndHorizontal();
             GUILayout.BeginVertical();
-            //
             
             //ScrollView
             _scrollView = EditorGUILayout.BeginScrollView(_scrollView, GUILayout.Height(800));
             
-            if (_allTypes != null && _allTypes.Count > 0)
+            //CreateFoldout
+            if (_currentDataBehaviour.ListOfType.Count > 0)
             {
-                foreach (var type in _allTypes)
+                for(int j = 0; j < _currentDataBehaviour.ListOfType.Count ; j++)
                 {
-                   
-                    if (_foldoutProperties.ContainsKey(type.Name))
+                    if (_foldoutProperties.ContainsKey(_currentDataBehaviour.ListOfType[j].Name))
                     {
-                        _foldoutProperties[type.Name] = EditorGUILayout.Foldout(_foldoutProperties[type.Name], type.Name);
-                        if (_foldoutProperties[type.Name])
+                        _foldoutProperties[_currentDataBehaviour.ListOfType[j].Name] = EditorGUILayout.Foldout(
+                            _foldoutProperties[_currentDataBehaviour.ListOfType[j].Name], _currentDataBehaviour.ListOfType[j].Name);
+                        if (_foldoutProperties[_currentDataBehaviour.ListOfType[j].Name])
                         {
-                            _tempFieldsInfo = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-                            foreach (var f in _tempFieldsInfo)
+                            for(int i = 0; i < _currentDataBehaviour.ListOfType[j].ListOfFields.Count; i++)
                             {
-                                bool isFieldExisting = _fieldCheckList.Exists(x => x.NameOfField == f.Name);
-                                if (!isFieldExisting)
-                                {
-                                    _fieldCheckList.Add(new SaveDataBehaviourStruct(f.Name, true));
-                                    EditorGUILayout.BeginHorizontal();
-                                    //_fieldCheckProperties[f.Name] = SaveDataBehaviourStruct.SetCheck(_fieldCheckProperties[f.Name], EditorGUILayout.Toggle("", _fieldCheckProperties[f.Name].IsChecked));
-                                    _fieldCheckList[^1] = SaveDataBehaviourStruct.SetCheck(_fieldCheckList[^1], EditorGUILayout.Toggle("", _fieldCheckList[^1].IsChecked));
-                                    EditorGUILayout.LabelField($"{f.Name} ({f.FieldType.Name})");
-                                    EditorGUILayout.EndHorizontal();
-                                }
-                                else
-                                {
-                                    EditorGUILayout.BeginHorizontal();
-                                    int i =_fieldCheckList.FindIndex(x => x.NameOfField == f.Name);
-                                    _fieldCheckList[i] =SaveDataBehaviourStruct.SetCheck(_fieldCheckList[i], EditorGUILayout.Toggle("", _fieldCheckList[i].IsChecked));
-                                    EditorGUILayout.LabelField($"{f.Name} ({f.FieldType.Name})");
-                                    EditorGUILayout.EndHorizontal();
-                                }
+                                EditorGUILayout.BeginHorizontal();
+                                _currentDataBehaviour.ListOfType[j].ListOfFields[i] = SaveDataBehaviourStruct.SetCheck(_currentDataBehaviour.ListOfType[j].ListOfFields[i], EditorGUILayout.Toggle("",
+                                    _currentDataBehaviour.ListOfType[j].ListOfFields[i].IsChecked));
+                                EditorGUILayout.LabelField($"{_currentDataBehaviour.ListOfType[j].ListOfFields[i].NameOfField}");
+                                EditorGUILayout.EndHorizontal();
                             }
                         }
                     }
                     else
                     {
-                        _foldoutProperties[type.Name] = false;
-                        _foldoutProperties[type.Name] = EditorGUILayout.Foldout(_foldoutProperties[type.Name], type.Name);
-                        if (_foldoutProperties[type.Name])
+                        _foldoutProperties[_currentDataBehaviour.ListOfType[j].Name] = false;
+                        _foldoutProperties[_currentDataBehaviour.ListOfType[j].Name] = EditorGUILayout.Foldout(_foldoutProperties[_currentDataBehaviour.ListOfType[j].Name], _currentDataBehaviour.ListOfType[j].Name);
+                        if (_foldoutProperties[_currentDataBehaviour.ListOfType[j].Name])
                         {
                             EditorGUILayout.LabelField("Wow !");
                         }
                     }
-
                 }
             }
+            
+            // if (_allTypes != null && _allTypes.Count > 0)
+            // {
+            //     foreach (var type in _allTypes)
+            //     {
+            //        
+            //         if (_foldoutProperties.ContainsKey(type.Name))
+            //         {
+            //             _foldoutProperties[type.Name] = EditorGUILayout.Foldout(_foldoutProperties[type.Name], type.Name);
+            //             if (_foldoutProperties[type.Name])
+            //             {
+            //                 _tempFieldsInfo = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            //
+            //                 foreach (var f in _tempFieldsInfo)
+            //                 {
+            //                     bool isFieldExisting = _fieldCheckList.Exists(x => x.NameOfField == f.Name);
+            //                     if (!isFieldExisting)
+            //                     {
+            //                         _fieldCheckList.Add(new SaveDataBehaviourStruct(f.Name, true));
+            //                         EditorGUILayout.BeginHorizontal();
+            //                         //_fieldCheckProperties[f.Name] = SaveDataBehaviourStruct.SetCheck(_fieldCheckProperties[f.Name], EditorGUILayout.Toggle("", _fieldCheckProperties[f.Name].IsChecked));
+            //                         _fieldCheckList[^1] = SaveDataBehaviourStruct.SetCheck(_fieldCheckList[^1], EditorGUILayout.Toggle("", _fieldCheckList[^1].IsChecked));
+            //                         EditorGUILayout.LabelField($"{f.Name} ({f.FieldType.Name})");
+            //                         EditorGUILayout.EndHorizontal();
+            //                     }
+            //                     else
+            //                     {
+            //                         EditorGUILayout.BeginHorizontal();
+            //                         int i =_fieldCheckList.FindIndex(x => x.NameOfField == f.Name);
+            //                         _fieldCheckList[i] =SaveDataBehaviourStruct.SetCheck(_fieldCheckList[i], EditorGUILayout.Toggle("", _fieldCheckList[i].IsChecked));
+            //                         EditorGUILayout.LabelField($"{f.Name} ({f.FieldType.Name})");
+            //                         EditorGUILayout.EndHorizontal();
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //         else
+            //         {
+            //             _foldoutProperties[type.Name] = false;
+            //             _foldoutProperties[type.Name] = EditorGUILayout.Foldout(_foldoutProperties[type.Name], type.Name);
+            //             if (_foldoutProperties[type.Name])
+            //             {
+            //                 EditorGUILayout.LabelField("Wow !");
+            //             }
+            //         }
+            //
+            //     }
+            //}
             //
             
             EditorGUILayout.EndScrollView();
@@ -150,9 +186,9 @@ namespace SaveRuntime.Editor
         private List<Type> GetAssemblyClasses()
         {
             List<Type> listOfAllTypes = new List<Type>(); //Return Value
-            List<Assembly> _allAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+            List<Assembly> allAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
 
-            foreach (var assembly in _allAssemblies)
+            foreach (var assembly in allAssemblies)
             {
                 foreach (var type in assembly.GetTypes())
                 {
@@ -172,16 +208,24 @@ namespace SaveRuntime.Editor
          */
         public void UpdateSo(SaveDataBehaviour currentSo, SaveDataBehaviourTypeStruct currentTypeStruct)
         {
-            if (currentSo.ListOfType.IndexOf(currentTypeStruct) != -1)
-            {
-                var currentTypeIndexInSo = currentSo.ListOfType.IndexOf(currentTypeStruct);
+            
+            // if (currentSo.ListOfType.Find())
+            // {
+            //     var currentTypeIndexInSo = currentSo.ListOfType.IndexOf(currentTypeStruct);
+            //
+            //     currentSo.ListOfType[currentTypeIndexInSo] = currentTypeStruct;
+            // }
 
-                currentSo.ListOfType[currentTypeIndexInSo] = currentTypeStruct;
-            }
-            else
+            foreach (var typeStruct in currentSo.ListOfType.ToList())
             {
-                currentSo.ListOfType.Add(currentTypeStruct);
+                if (typeStruct.Name == currentTypeStruct.Name)
+                {
+                    currentSo.ListOfType[typeStruct.Id] = currentTypeStruct;
+                    return;
+                }
             }
+            currentSo.ListOfType.Add(currentTypeStruct);
+            
         }
     }
 }
