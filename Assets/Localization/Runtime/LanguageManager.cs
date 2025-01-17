@@ -18,11 +18,11 @@ namespace Localization.Runtime
         // Start is called once before the first execution of Update after the MonoBehaviour is created
 
         [SerializeField] private LANGUAGES_STATE LANGUAGE;
-        [SerializeField] TextAsset _transalationAsset;
-        [SerializeField] List<LocalizationData> _textList;
+        public TextAsset _transalationAsset;
+        public List<LocalizationData> TextList;
         [SerializeField] CSV_TextTable translationTable = new CSV_TextTable();
 
-        public LANGUAGES_STATE LANGUAGEProperty { get { return LANGUAGE; } set { LANGUAGE = value; OnLANGUAGEValueChange.Invoke(); } }
+        public LANGUAGES_STATE LANGUAGEProperty { get { return LANGUAGE; } set { LANGUAGE = value; OnLANGUAGEValueChange?.Invoke(); } }
 
         private Action OnLANGUAGEValueChange;
 
@@ -50,7 +50,7 @@ namespace Localization.Runtime
         {
             MaskableGraphic[] maskableGraphics = FindObjectsByType<MaskableGraphic>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             
-            _textList.Clear();
+            TextList.Clear();
 
             foreach (MaskableGraphic mg in maskableGraphics)
             {
@@ -58,11 +58,11 @@ namespace Localization.Runtime
                 {
                     case TMP_Text tmpText: 
                         if(!CheckForDuplicateInList(tmpText))
-                            _textList.Add(new LocalizationData(tmpText)); 
+                            TextList.Add(new LocalizationData(tmpText)); 
                         break;
                     case Text text: 
                         if(!CheckForDuplicateInList(text))
-                            _textList.Add(new LocalizationData(text)); 
+                            TextList.Add(new LocalizationData(text)); 
                         break;
                 }
             }
@@ -70,7 +70,7 @@ namespace Localization.Runtime
 
         private void TranslateAllTexts()
         {
-            foreach (LocalizationData data in _textList)
+            foreach (LocalizationData data in TextList)
             {
                 for (int i = 0; i < translationTable.NumRows(); i++)
                 {
@@ -109,7 +109,7 @@ namespace Localization.Runtime
 
         private bool CheckForDuplicateInList(Component component)
         {
-            foreach(LocalizationData data in _textList)
+            foreach(LocalizationData data in TextList)
             {
                 if(data.TextComponent == component)
                 {
@@ -122,7 +122,7 @@ namespace Localization.Runtime
 #if UNITY_EDITOR
         public void ClearTextList()
         {
-            _textList.Clear();
+            TextList.Clear();
         }
 #endif
     }
