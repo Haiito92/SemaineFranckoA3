@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using LittleDialogue.Runtime.LittleGraphAddOn;
 using LittleGraph.Runtime;
+using LittleGraph.Runtime.Attributes;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,7 +12,7 @@ namespace LittleDialogue.Runtime
 {
     public class DialogueController : MonoBehaviour
     {
-        private List<LDMultipleChoiceDialogueNode> m_dialogueNodes;
+        private List<LDDialogueNode> m_dialogueNodes;
 
         [SerializeField] private DialogueBox m_dialogueBox; 
         
@@ -19,8 +21,8 @@ namespace LittleDialogue.Runtime
             //Subscribe to all dialogue nodes
             foreach (LGGraphObject graphObject in graphObjects)
             {
-                m_dialogueNodes = graphObject.GraphInstance.Nodes.OfType<LDMultipleChoiceDialogueNode>().ToList();
-                foreach (LDMultipleChoiceDialogueNode dialogueNode in m_dialogueNodes)
+                m_dialogueNodes = graphObject.GraphInstance.Nodes.OfType<LDDialogueNode>().ToList();
+                foreach (LDDialogueNode dialogueNode in m_dialogueNodes)
                 {
                     dialogueNode.Executed += OnDialogueNodeExecuted;
                 }
@@ -32,9 +34,13 @@ namespace LittleDialogue.Runtime
 
             m_dialogueBox.ShowBox();
 
-            if (node is LDMultipleChoiceDialogueNode dialogueNode)
+            if (node is LDSingleChoiceDialogueNode singleChoiceNode)
             {
-                m_dialogueBox.UpdateText(dialogueNode.DialogueText);
+                m_dialogueBox.UpdateText(singleChoiceNode.DialogueText);
+            }
+            else if(node is LDMultipleChoiceDialogueNode multipleChoiceNode)
+            {
+                m_dialogueBox.UpdateText(multipleChoiceNode.DialogueText);
             }
         }
     }
