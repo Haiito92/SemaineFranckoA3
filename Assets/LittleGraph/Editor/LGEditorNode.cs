@@ -78,12 +78,14 @@ namespace LittleGraph.Editor
             {
                 if (property.GetCustomAttribute<ExposedPropertyAttribute>() is ExposedPropertyAttribute exposedPropertyAttribute)
                 {
-                    PropertyField field = DrawProperty(property.Name);
+                    
+                    PropertyField field = DrawProperty(property.Name, exposedPropertyAttribute);
                     //field.RegisterValueChangeCallback(OnFieldChangeCallback);
                 }
             }
             
             RefreshExpandedState();
+            
         }
 
         private void DrawTitleButtons(LGNodeInfoAttribute info, LGGraph graph)
@@ -145,7 +147,7 @@ namespace LittleGraph.Editor
             outputContainer.Add(outputPort);
         }
 
-        private PropertyField DrawProperty(string propertyName)
+        private PropertyField DrawProperty(string propertyName, ExposedPropertyAttribute expositionInfo)
         {
             if (m_serializedProperty == null)
             {
@@ -156,6 +158,8 @@ namespace LittleGraph.Editor
             
             PropertyField field = new PropertyField(property);
             field.bindingPath = property.propertyPath;
+
+            field.enabledSelf = expositionInfo.EditableInGraph;
             
             extensionContainer.Add(field);
             return field;

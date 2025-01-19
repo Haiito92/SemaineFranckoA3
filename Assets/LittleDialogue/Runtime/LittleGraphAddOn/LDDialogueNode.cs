@@ -1,3 +1,4 @@
+using LittleDialogue.Runtime.Localization;
 using LittleGraph.Runtime;
 using LittleGraph.Runtime.Attributes;
 using UnityEngine;
@@ -9,9 +10,12 @@ namespace LittleDialogue.Runtime.LittleGraphAddOn
     {
         [ExposedProperty()]
         public string DialogueText;
-        
-        // [ExposedProperty()]
-        // public 
-    }
+
+        [ExposedProperty()] 
+        public LocalizationDatabase LocalizationDatabase;
+
+        [ExposedProperty(false)] 
+        public string CurrentLocalizationKey;
+    } 
 #endif
 }
