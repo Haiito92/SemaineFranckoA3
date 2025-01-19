@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SaveRuntime.Editor
 {
-    [System.Serializable]
+    [Serializable]
     public struct SaveDataBehaviourStruct
     {
         public string NameOfField;
@@ -34,7 +34,7 @@ namespace SaveRuntime.Editor
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct SaveDataBehaviourTypeStruct
     {
         public string Name;
