@@ -40,7 +40,7 @@ namespace LittleDialogue.Runtime
                 LGConnection connection =
                     node.NodeConnections.Find(connection => connection.OutputPort.NodeId == dialogueNode.ID);
                 
-                m_dialogueBox.UpdateChoiceButton(0, connection.OutputPort.PortName, () =>
+                m_dialogueBox.UpdateChoiceButton(0, (string)connection.OutputPort.PortData, () =>
                 {
                     node.EmitFlow(connection.InputPort.NodeId);
                 });

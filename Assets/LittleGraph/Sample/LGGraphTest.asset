@@ -13,41 +13,91 @@ MonoBehaviour:
   m_Name: LGGraphTest
   m_EditorClassIdentifier: 
   m_nodes:
-  - rid: 4142552339766575185
-  - rid: 4142552339766575186
-  m_connections: []
+  - rid: 4142552339766575238
+  - rid: 4142552339766575239
+  - rid: 4142552339766575240
+  m_connections:
+  - InputPort:
+      NodeId: 50c42ee4-7d23-4225-8f54-4070d73238ce
+      PortIndex: 0
+    OutputPort:
+      NodeId: 7ac8cb2a-e5e0-49fb-87b0-af90f57fd87c
+      PortIndex: 0
+  - InputPort:
+      NodeId: 7ef52a23-7b67-4b1b-a8f5-19d3456e9e0f
+      PortIndex: 0
+    OutputPort:
+      NodeId: 50c42ee4-7d23-4225-8f54-4070d73238ce
+      PortIndex: 1
   references:
     version: 2
     RefIds:
-    - rid: 4142552339766575185
+    - rid: 4142552339766575238
+      type: {class: LGStartNode, ns: LittleGraph.Runtime.Types, asm: LittleGraph.Runtime}
+      data:
+        m_guid: 7ac8cb2a-e5e0-49fb-87b0-af90f57fd87c
+        m_position:
+          serializedVersion: 2
+          x: 30
+          y: 364
+          width: 74
+          height: 77
+        m_nodeConnections:
+        - InputPort:
+            NodeId: 50c42ee4-7d23-4225-8f54-4070d73238ce
+            PortIndex: 0
+          OutputPort:
+            NodeId: 7ac8cb2a-e5e0-49fb-87b0-af90f57fd87c
+            PortIndex: 0
+        TypeName: LittleGraph.Runtime.Types.LGStartNode, LittleGraph.Runtime, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+    - rid: 4142552339766575239
       type: {class: LDSingleChoiceDialogueNode, ns: LittleDialogue.Runtime.LittleGraphAddOn, asm: LittleDialogue.Runtime}
       data:
-        m_guid: f8143dc3-efe1-48fd-b806-fc9223bfdabc
+        m_guid: 50c42ee4-7d23-4225-8f54-4070d73238ce
         m_position:
           serializedVersion: 2
-          x: 331
-          y: 411
-          width: 412
-          height: 154
-        m_nodeConnections: []
+          x: 218
+          y: 364
+          width: 316
+          height: 135
+        m_nodeConnections:
+        - InputPort:
+            NodeId: 50c42ee4-7d23-4225-8f54-4070d73238ce
+            PortIndex: 0
+          OutputPort:
+            NodeId: 7ac8cb2a-e5e0-49fb-87b0-af90f57fd87c
+            PortIndex: 0
+        - InputPort:
+            NodeId: 7ef52a23-7b67-4b1b-a8f5-19d3456e9e0f
+            PortIndex: 0
+          OutputPort:
+            NodeId: 50c42ee4-7d23-4225-8f54-4070d73238ce
+            PortIndex: 1
         TypeName: LittleDialogue.Runtime.LittleGraphAddOn.LDSingleChoiceDialogueNode,
           LittleDialogue.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        DialogueText: 
-        LocalizationDatabase: {fileID: 11400000, guid: dbc60cd132f3fcf428a9b5d53aa3e0b8, type: 2}
+        DialogueText: Hello you!
+        LocalizationDatabase: {fileID: 0}
         CurrentLocalizationKey: 
-    - rid: 4142552339766575186
-      type: {class: LDMultipleChoiceDialogueNode, ns: LittleDialogue.Runtime.LittleGraphAddOn, asm: LittleDialogue.Runtime}
+    - rid: 4142552339766575240
+      type: {class: LDSingleChoiceDialogueNode, ns: LittleDialogue.Runtime.LittleGraphAddOn, asm: LittleDialogue.Runtime}
       data:
-        m_guid: b79da81d-f64e-41a3-9124-d7dcb8c34ee3
+        m_guid: 7ef52a23-7b67-4b1b-a8f5-19d3456e9e0f
         m_position:
           serializedVersion: 2
-          x: 279
-          y: 216
+          x: 584
+          y: 364
           width: 316
-          height: 141
-        m_nodeConnections: []
-        TypeName: LittleDialogue.Runtime.LittleGraphAddOn.LDMultipleChoiceDialogueNode,
+          height: 135
+        m_nodeConnections:
+        - InputPort:
+            NodeId: 7ef52a23-7b67-4b1b-a8f5-19d3456e9e0f
+            PortIndex: 0
+          OutputPort:
+            NodeId: 50c42ee4-7d23-4225-8f54-4070d73238ce
+            PortIndex: 1
+        TypeName: LittleDialogue.Runtime.LittleGraphAddOn.LDSingleChoiceDialogueNode,
           LittleDialogue.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-        DialogueText: 
+        DialogueText: Bye bye!
         LocalizationDatabase: {fileID: 0}
         CurrentLocalizationKey: 

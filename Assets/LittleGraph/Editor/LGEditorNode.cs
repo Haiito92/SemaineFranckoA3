@@ -7,6 +7,7 @@ using LittleGraph.Runtime.Attributes;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
@@ -100,6 +101,7 @@ namespace LittleGraph.Editor
         private void OnAddOutput()
         {
             m_node.OutputPortAmount += 1;
+            m_node.OutputUserDatas.Add(null);
             CreateFlowOutputPort(m_nodeInfos);
         }
 
@@ -123,11 +125,17 @@ namespace LittleGraph.Editor
             
             Port outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single,
                 typeof(PortTypes.FlowPort));
-            outputPort.portName = "Out";
-            outputPort.tooltip = "Flow output";
             
+            //Add to editor node
+            m_outputPorts.Add(outputPort);
+            m_ports.Add(outputPort);
+            outputContainer.Add(outputPort);
+            
+            //Set up complementary data
             if (nodeInfo.OutputComplementaryDataType == typeof(string))
             {
+                object outputData = m_node.OutputUserDatas[m_outputPorts.IndexOf(outputPort)];
+                
                 TextField textField = new TextField()
                 {
                     value = "Out"
@@ -135,16 +143,33 @@ namespace LittleGraph.Editor
                 // Synchroniser la valeur du champ avec le DialogueText du noeud
                 textField.RegisterValueChangedCallback(evt =>
                 {
-                    outputPort.portName = evt.newValue;
-                    // Mettre à jour le DialogueText
+                    outputPort.userData = evt.newValue;
+                    m_node.OutputUserDatas[m_outputPorts.IndexOf(outputPort)] = outputPort.userData;
+                    Debug.Log(m_node.OutputUserDatas[m_outputPorts.IndexOf(outputPort)]);
+                    m_serializedObject.Update();
                 });
-                outputContainer.Add(textField);
+                outputPort.Add(textField);
+                outputPort.portName = "";
+                
+                if (outputData == null)
+                {
+                    outputPort.userData = textField.value;
+                    
+                    outputData = textField.value;
+                    Debug.Log((string)outputData);
+                }
+                else
+                {
+                    textField.value = (string)outputData;
+                    outputPort.userData = (string)outputData;
+                }
+
             }
-            
-            //Add to editor node
-            m_outputPorts.Add(outputPort);
-            m_ports.Add(outputPort);
-            outputContainer.Add(outputPort);
+            else
+            {
+                outputPort.portName = "Out";
+                outputPort.tooltip = "Flow output";
+            }
         }
 
         private PropertyField DrawProperty(string propertyName, ExposedPropertyAttribute expositionInfo)

@@ -12,7 +12,8 @@ namespace LittleGraph.Runtime
         [SerializeField] private string m_guid;
         [SerializeField] private Rect m_position;
 
-        private int m_outputPortAmount = 1;
+        private int m_outputPortAmount;
+        [SerializeField]private List<object> m_outputUserDatas;
         [SerializeField/*, HideInInspector*/] protected List<LGConnection> m_nodeConnections;
         
         public string TypeName;
@@ -24,6 +25,13 @@ namespace LittleGraph.Runtime
             get => m_outputPortAmount;
             set => m_outputPortAmount = value;
         }
+
+        public List<object> OutputUserDatas
+        {
+            get => m_outputUserDatas;
+            set => m_outputUserDatas = value;
+        }
+        
         public List<LGConnection> NodeConnections => m_nodeConnections;
 
         public Action ReceivedFlow;
@@ -34,6 +42,8 @@ namespace LittleGraph.Runtime
         {
             NewGUID();
             m_nodeConnections = new List<LGConnection>();
+            m_outputPortAmount = 1;
+            m_outputUserDatas = new List<object> { null };
         }
 
         private void NewGUID()

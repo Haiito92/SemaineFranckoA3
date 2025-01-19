@@ -177,7 +177,11 @@ namespace LittleGraph.Editor
             DeleteElements(outputPort.connections);
 
             editorNode.Node.OutputPortAmount -= 1;
+            editorNode.Node.OutputUserDatas.Remove(editorNode.Node.OutputUserDatas[^1]);
+            
             editorNode.OutputPorts.Remove(outputPort);
+            editorNode.Ports.Remove(outputPort);
+            
             editorNode.outputContainer.Remove(outputPort);
         }
         
