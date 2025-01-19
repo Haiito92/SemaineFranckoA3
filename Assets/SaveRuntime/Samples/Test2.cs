@@ -1,6 +1,7 @@
 using UnityEngine;
 
-[Savable(CanBeModified = true)]
+[Savable(typeof(Test2),CanBeModified = true)]
+[System.Serializable]
 public class Test2 : MonoBehaviour
 {
     public bool bool1 = true;

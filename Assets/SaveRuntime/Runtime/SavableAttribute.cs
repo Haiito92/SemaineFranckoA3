@@ -9,4 +9,11 @@ using UnityEngine;
 public class SavableAttribute : Attribute
 {
     public bool CanBeModified = true;
+
+    public Type type;
+
+    public SavableAttribute(Type currentType)
+    {
+        type = currentType;
+    }
 }

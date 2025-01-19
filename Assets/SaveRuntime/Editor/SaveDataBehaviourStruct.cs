@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SaveRuntime.Editor
 {
@@ -48,6 +50,44 @@ namespace SaveRuntime.Editor
             TypeOfClass = newTypeOfClass;
             ListOfFields = newListOfSaveDataBehaviour;
             Id = id;
+        }
+    }
+    
+    [Serializable]
+    public struct SavableInstanceOfDataStruct
+    {
+        public string NameOfTheObject;
+        public int Id;
+        public MonoBehaviour Script;
+        public Type TypeOfClass;
+
+        public List<FieldInfo> Fields;
+        
+        public SavableInstanceOfDataStruct(string nameOfTheObject,int id, Type newTypeOfClass, MonoBehaviour script, List<FieldInfo> fields)
+        {
+            NameOfTheObject = nameOfTheObject;
+            TypeOfClass = newTypeOfClass;
+            Id = id;
+            Script = script;
+            Fields = fields;
+        }
+    }
+    
+    [Serializable]
+    public struct SavableStructWithoutScript
+    {
+        public string NameOfTheObject;
+        public int Id;
+        public Type TypeOfClass;
+
+        public List<FieldInfo> Fields;
+        
+        public SavableStructWithoutScript(string nameOfTheObject,int id, Type newTypeOfClass, List<FieldInfo> fields)
+        {
+            NameOfTheObject = nameOfTheObject;
+            TypeOfClass = newTypeOfClass;
+            Id = id;
+            Fields = fields;
         }
     }
 }

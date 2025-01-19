@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Compilation;
@@ -18,7 +19,6 @@ namespace SaveRuntime.Editor
 
         //so
         private SaveDataBehaviour _currentDataBehaviour;
-        private SerializedObject _serializedObject;
         
         private List<Type> _allTypes = new List<Type>();
         
@@ -41,21 +41,20 @@ namespace SaveRuntime.Editor
         }
         
         //Current Data Behaviour Loaded on Customized Show Windows (only on SO -> see SaveDataEditor)
-        public static void ShowWindow(SerializedObject serializedObject)
+        public static void ShowWindow(SaveDataBehaviour saveObject)
         {
             if (!_window)
             {
                 _window = GetWindow<SaveEditorTool>("SaveEditorTool");
                 //Load current Data
-                _window.Load(serializedObject);
+                _window.Load(saveObject);
             }
             // TODO - SetWindowSize
         }
         
-        private void Load(SerializedObject serializedObject)
+        private void Load(SaveDataBehaviour saveObject)
         {
-            _serializedObject = serializedObject;
-            _currentDataBehaviour = (SaveDataBehaviour)serializedObject.targetObject;
+            _currentDataBehaviour = saveObject;
         }
         
     
@@ -133,10 +132,12 @@ namespace SaveRuntime.Editor
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Save Data"))
             {
+                SaveFile.DataPersistentObjNonSorted = SaveFile.FindAllInstanceSavable();
+                SaveFile.DataPersistentObjSorted =
+                    GetSortedListOfSavableDataStruct(SaveFile.DataPersistentObjNonSorted);
+                SaveFile.SaveContent(SaveFile.DataPersistentObjSorted);
             }
             GUILayout.EndHorizontal();
-            
-            
         }
         
         /**
@@ -196,6 +197,41 @@ namespace SaveRuntime.Editor
                 }
             }
             currentSo.ListOfType.Add(currentTypeStruct);
+        }
+
+        public List<SavableInstanceOfDataStruct> GetSortedListOfSavableDataStruct(
+            List<SavableInstanceOfDataStruct> nonSortedSavableDataStruct)
+        {
+            List<SavableInstanceOfDataStruct> finalListOfObjWithNiceFields = new List<SavableInstanceOfDataStruct>();
+            foreach (var savableInstanceOfDataStruct in nonSortedSavableDataStruct) //For each of OBJ
+            {
+                List<FieldInfo> newFieldsInfo = new List<FieldInfo>();
+                //Find a SO type equal to the type of the instance of Script
+                SaveDataBehaviourTypeStruct tempTypeStruct =
+                    _currentDataBehaviour.ListOfType.Find(x =>
+                        x.Name == savableInstanceOfDataStruct.TypeOfClass.Name);
+                
+                
+                if (tempTypeStruct.ListOfFields.Any()) //Check if we found a common type
+                {
+                    foreach (var fieldInfoOfSavableAsset in savableInstanceOfDataStruct.Fields)
+                    {
+                        SaveDataBehaviourStruct currentSoField = tempTypeStruct.ListOfFields.Find(x => x.NameOfField == fieldInfoOfSavableAsset.Name);
+                        if (!String.IsNullOrEmpty(currentSoField.NameOfField)) //Check if the field was found
+                        {
+                            var newVar = fieldInfoOfSavableAsset.GetValue(savableInstanceOfDataStruct.Script);
+                            if (currentSoField.IsChecked) //If the SO Field is check, we add it
+                            {
+                                newFieldsInfo.Add(fieldInfoOfSavableAsset); 
+                                Debug.Log("Name of type :  " + savableInstanceOfDataStruct.NameOfTheObject + "Name : " + fieldInfoOfSavableAsset.Name + " " + "Value : " + newVar);
+                            }
+                        }
+                    }
+                    
+                    finalListOfObjWithNiceFields.Add(new SavableInstanceOfDataStruct(savableInstanceOfDataStruct.NameOfTheObject, savableInstanceOfDataStruct.Id, savableInstanceOfDataStruct.TypeOfClass, savableInstanceOfDataStruct.Script, newFieldsInfo));
+                }
+            }
+            return finalListOfObjWithNiceFields;
         }
     }
 }
