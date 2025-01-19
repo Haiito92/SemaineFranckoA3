@@ -12,12 +12,18 @@ namespace LittleGraph.Runtime
         [SerializeField] private string m_guid;
         [SerializeField] private Rect m_position;
 
+        private int m_outputPortAmount = 1;
         [SerializeField/*, HideInInspector*/] protected List<LGConnection> m_nodeConnections;
         
         public string TypeName;
         public string ID => m_guid;
         public Rect Position => m_position;
 
+        public int OutputPortAmount
+        {
+            get => m_outputPortAmount;
+            set => m_outputPortAmount = value;
+        }
         public List<LGConnection> NodeConnections => m_nodeConnections;
 
         public Action ReceivedFlow;

@@ -133,7 +133,7 @@ namespace LittleGraph.Editor
             LGEditorNode outputNode = (LGEditorNode)edge.output.node;
             int outputIndex = outputNode.Ports.IndexOf(edge.output);
 
-            LGConnection connection = new LGConnection(inputNode.Node.ID, inputIndex, outputNode.Node.ID, outputIndex);
+            LGConnection connection = new LGConnection(inputNode.Node.ID, inputIndex,edge.input.portName, outputNode.Node.ID, outputIndex, edge.output.portName);
             m_graph.Connections.Add(connection);
             m_connectionDictionary.Add(edge, connection);
             
@@ -175,7 +175,8 @@ namespace LittleGraph.Editor
             Port outputPort = editorNode.OutputPorts[^1];
             
             DeleteElements(outputPort.connections);
-            
+
+            editorNode.Node.OutputPortAmount -= 1;
             editorNode.OutputPorts.Remove(outputPort);
             editorNode.outputContainer.Remove(outputPort);
         }

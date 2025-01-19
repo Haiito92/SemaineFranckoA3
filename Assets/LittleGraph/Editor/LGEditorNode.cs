@@ -68,7 +68,10 @@ namespace LittleGraph.Editor
             if (m_nodeInfos.HasFlowOutput)
             {
                 // info.OutputComplementaryDataType.GetFields()
-                CreateFlowOutputPort(m_nodeInfos);
+                for (int i = 0; i < m_node.OutputPortAmount; i++)
+                {
+                    CreateFlowOutputPort(m_nodeInfos);
+                }
             }
 
             foreach (FieldInfo property in typeInfo.GetFields())
@@ -94,6 +97,7 @@ namespace LittleGraph.Editor
 
         private void OnAddOutput()
         {
+            m_node.OutputPortAmount += 1;
             CreateFlowOutputPort(m_nodeInfos);
         }
 
@@ -114,6 +118,7 @@ namespace LittleGraph.Editor
 
         private void CreateFlowOutputPort(LGNodeInfoAttribute nodeInfo)
         {
+            
             Port outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single,
                 typeof(PortTypes.FlowPort));
             outputPort.portName = "Out";
@@ -128,7 +133,8 @@ namespace LittleGraph.Editor
                 // Synchroniser la valeur du champ avec le DialogueText du noeud
                 textField.RegisterValueChangedCallback(evt =>
                 {
-                    outputPort.portName = evt.newValue; // Mettre à jour le DialogueText
+                    outputPort.portName = evt.newValue;
+                    // Mettre à jour le DialogueText
                 });
                 outputContainer.Add(textField);
             }

@@ -33,11 +33,13 @@ namespace LittleDialogue.Runtime
             m_dialogueText.text = newText;
         }
 
-        public void UpdateButtonCallback(int index, UnityAction callback)
+        public void UpdateChoiceButton(int index, string buttonText = "Null", UnityAction callback = null)
         {
-           if(index > m_choiceButtons.Count - 1) return;
-
-           m_choiceButtons[index].onClick.AddListener(callback);
+            if(index > m_choiceButtons.Count - 1) return;
+            
+            Button button = m_choiceButtons[index];
+            button.GetComponentInChildren<TextMeshProUGUI>().text = buttonText;
+            button.onClick.AddListener(callback);
         }
 
         // public void UpdateChoiceButtonTexts(params string[] options)
