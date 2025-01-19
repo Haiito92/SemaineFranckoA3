@@ -156,6 +156,7 @@ namespace LittleGraph.Editor
             
             PropertyField field = new PropertyField(property);
             field.bindingPath = property.propertyPath;
+            
             extensionContainer.Add(field);
             return field;
         }

@@ -9,6 +9,9 @@ namespace LittleDialogue.Runtime.LittleGraphAddOn
     {
         [ExposedProperty()]
         public string DialogueText;
+        
+        // [ExposedProperty()]
+        // public 
     }
 #endif
 }
