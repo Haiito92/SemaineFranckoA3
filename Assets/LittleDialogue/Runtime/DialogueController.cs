@@ -37,13 +37,17 @@ namespace LittleDialogue.Runtime
             {
                 m_dialogueBox.UpdateText(dialogueNode.DialogueText);
 
-                LGConnection connection =
-                    node.NodeConnections.Find(connection => connection.OutputPort.NodeId == dialogueNode.ID);
-                
-                m_dialogueBox.UpdateChoiceButton(0, (string)connection.OutputPort.PortData, () =>
+                if (dialogueNode is LDSingleChoiceDialogueNode singleChoiceDialogueNode)
                 {
-                    node.EmitFlow(connection.InputPort.NodeId);
-                });
+                    LGConnection connection =
+                        node.NodeConnections.Find(connection => connection.OutputPort.NodeId == dialogueNode.ID);
+                    
+                    m_dialogueBox.UpdateChoiceButton(0, singleChoiceDialogueNode.ChoiceText, () =>
+                    {
+                        node.EmitFlow(connection.InputPort.NodeId);
+                    });
+                }
+                
             }
             // if (node is LDSingleChoiceDialogueNode singleChoiceNode)
             // {

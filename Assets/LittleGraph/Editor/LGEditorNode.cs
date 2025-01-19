@@ -16,13 +16,13 @@ namespace LittleGraph.Editor
 {
     public class LGEditorNode : Node
     {
-        private LGNode m_node;
-        private LGNodeInfoAttribute m_nodeInfos;
-        private List<Port> m_outputPorts;
-        private List<Port> m_ports;
+        protected LGNode m_node;
+        protected LGNodeInfoAttribute m_nodeInfos;
+        protected List<Port> m_outputPorts;
+        protected List<Port> m_ports;
 
-        private SerializedObject m_serializedObject;
-        private SerializedProperty m_serializedProperty;
+        protected SerializedObject m_serializedObject;
+        protected SerializedProperty m_serializedProperty;
         
         public LGNode Node => m_node;
         public List<Port> OutputPorts
@@ -32,9 +32,18 @@ namespace LittleGraph.Editor
         }
         public List<Port> Ports => m_ports;
 
-        public event Action<LGEditorNode> OutputRemovedAction; 
-        
+        public event Action<LGEditorNode> OutputRemovedAction;
+
+        public LGEditorNode()
+        {
+            
+        }
         public LGEditorNode(LGNode node, SerializedObject graphObject)
+        {
+            InitEditorNode(node, graphObject);
+        }
+
+        public void InitEditorNode(LGNode node, SerializedObject graphObject)
         {
             this.AddToClassList("ld-node");
 
@@ -79,14 +88,15 @@ namespace LittleGraph.Editor
             {
                 if (property.GetCustomAttribute<ExposedPropertyAttribute>() is ExposedPropertyAttribute exposedPropertyAttribute)
                 {
-                    
+                    Debug.Log(property.Name);
                     PropertyField field = DrawProperty(property.Name, exposedPropertyAttribute);
                     //field.RegisterValueChangeCallback(OnFieldChangeCallback);
                 }
             }
             
-            RefreshExpandedState();
             
+            
+            RefreshExpandedState();
         }
 
         private void DrawTitleButtons(LGNodeInfoAttribute info, LGGraph graph)
@@ -101,7 +111,6 @@ namespace LittleGraph.Editor
         private void OnAddOutput()
         {
             m_node.OutputPortAmount += 1;
-            m_node.OutputUserDatas.Add(null);
             CreateFlowOutputPort(m_nodeInfos);
         }
 
@@ -120,7 +129,7 @@ namespace LittleGraph.Editor
             inputContainer.Add(inputPort); 
         }
 
-        private void CreateFlowOutputPort(LGNodeInfoAttribute nodeInfo)
+        protected virtual void CreateFlowOutputPort(LGNodeInfoAttribute nodeInfo)
         {
             
             Port outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single,
@@ -131,45 +140,8 @@ namespace LittleGraph.Editor
             m_ports.Add(outputPort);
             outputContainer.Add(outputPort);
             
-            //Set up complementary data
-            if (nodeInfo.OutputComplementaryDataType == typeof(string))
-            {
-                object outputData = m_node.OutputUserDatas[m_outputPorts.IndexOf(outputPort)];
-                
-                TextField textField = new TextField()
-                {
-                    value = "Out"
-                };
-                // Synchroniser la valeur du champ avec le DialogueText du noeud
-                textField.RegisterValueChangedCallback(evt =>
-                {
-                    outputPort.userData = evt.newValue;
-                    m_node.OutputUserDatas[m_outputPorts.IndexOf(outputPort)] = outputPort.userData;
-                    Debug.Log(m_node.OutputUserDatas[m_outputPorts.IndexOf(outputPort)]);
-                    m_serializedObject.Update();
-                });
-                outputPort.Add(textField);
-                outputPort.portName = "";
-                
-                if (outputData == null)
-                {
-                    outputPort.userData = textField.value;
-                    
-                    outputData = textField.value;
-                    Debug.Log((string)outputData);
-                }
-                else
-                {
-                    textField.value = (string)outputData;
-                    outputPort.userData = (string)outputData;
-                }
-
-            }
-            else
-            {
-                outputPort.portName = "Out";
-                outputPort.tooltip = "Flow output";
-            }
+            outputPort.portName = "Out";
+            outputPort.tooltip = "Flow output";
         }
 
         private PropertyField DrawProperty(string propertyName, ExposedPropertyAttribute expositionInfo)
@@ -180,14 +152,52 @@ namespace LittleGraph.Editor
             }
 
             SerializedProperty property = m_serializedProperty.FindPropertyRelative(propertyName);
-            
-            PropertyField field = new PropertyField(property);
-            field.bindingPath = property.propertyPath;
 
-            field.enabledSelf = expositionInfo.EditableInGraph;
-            
-            extensionContainer.Add(field);
-            return field;
+            switch (expositionInfo.ExposedPropertyType)
+            {
+                case (ExposedPropertyType.Simple):
+                    PropertyField field = new PropertyField(property); 
+                    field.bindingPath = property.propertyPath;
+
+                    field.enabledSelf = expositionInfo.EditableInGraph;
+        
+                    extensionContainer.Add(field);
+                    return field;
+                // case ExposedPropertyType.List:
+                //     Debug.Log("List Property Type");
+                //     Label listLabel = new Label(propertyName);
+                //     extensionContainer.Add(listLabel);
+                //     
+                //     Button addButton = new Button().CreateButton("d_Toolbar Plus", () =>
+                //     {
+                //         property.arraySize = Mathf.Max(0, property.arraySize + 1);
+                //         RefreshExpandedState();
+                //     });
+                //     extensionContainer.Add(addButton);
+                //     Button removeButton = new Button().CreateButton("d_Toolbar Minus", () =>
+                //     {
+                //         property.arraySize = Mathf.Max(0, property.arraySize - 1);
+                //         RefreshExpandedState();
+                //     });
+                //     extensionContainer.Add(removeButton);
+                //     
+                //     for (int i = 0; i < property.arraySize; i++)
+                //     {
+                //         SerializedProperty arrayElementProperty = property.GetArrayElementAtIndex(i);
+                //         PropertyField subField = new PropertyField(arrayElementProperty); 
+                //         subField.bindingPath = arrayElementProperty.propertyPath;
+                //
+                //         subField.enabledSelf = expositionInfo.EditableInGraph;
+                //         extensionContainer.Add(subField);
+                //     }
+                    
+                    // return null;
+                case ExposedPropertyType.None:
+                    Debug.Log("No Property Type");
+                    return null;
+                default:
+                    return null;
+            }
         }
 
         private void FetchSerializedProperty()

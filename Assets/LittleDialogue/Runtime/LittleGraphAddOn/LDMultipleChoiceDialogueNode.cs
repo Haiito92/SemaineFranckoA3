@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using LittleGraph.Runtime;
 using LittleGraph.Runtime.Attributes;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace LittleDialogue.Runtime.LittleGraphAddOn
     [LGNodeInfo("Multiple Choice Dialogue", "Little Dialogue/Multiple Choice Dialogue", true, true, true)]
     public class LDMultipleChoiceDialogueNode : LDDialogueNode
     {
+        
         protected override void ExecuteNode()
         {
             base.ExecuteNode();

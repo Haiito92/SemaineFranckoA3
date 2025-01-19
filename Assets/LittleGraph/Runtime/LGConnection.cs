@@ -12,10 +12,10 @@ namespace LittleGraph.Runtime
             OutputPort = outputPort;
         }
 
-        public LGConnection(string inputNodeId, int inputPortIndex, object inputPortData, string outputNodeId, int outputPortIndex, object outputPortData)
+        public LGConnection(string inputNodeId, int inputPortIndex, string outputNodeId, int outputPortIndex)
         {
-            InputPort = new LGConnectionPort(inputNodeId, inputPortIndex, inputPortData);
-            OutputPort = new LGConnectionPort(outputNodeId, outputPortIndex, outputPortData);
+            InputPort = new LGConnectionPort(inputNodeId, inputPortIndex);
+            OutputPort = new LGConnectionPort(outputNodeId, outputPortIndex);
         }
     }
     
@@ -24,13 +24,12 @@ namespace LittleGraph.Runtime
     {
         public string NodeId;
         public int PortIndex;
-        public object PortData;
-
-        public LGConnectionPort(string nodeId, int portIndex, object portData)
+        
+        
+        public LGConnectionPort(string nodeId, int portIndex)
         {
             NodeId = nodeId;
             PortIndex = portIndex;
-            PortData = portData;
         }
     }
 }

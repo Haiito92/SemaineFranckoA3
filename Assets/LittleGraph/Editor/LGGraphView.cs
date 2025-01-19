@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using LittleGraph.Editor.Attributes;
 using LittleGraph.Runtime;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -17,6 +20,8 @@ namespace LittleGraph.Editor
         
         public LGEditorWindow Window => m_window;
 
+        private List<Type> m_customEditorNodeTypes;
+        
         private List<LGEditorNode> m_graphNodes;
         private Dictionary<string, LGEditorNode> m_nodeDictionary;
         private Dictionary<Edge, LGConnection> m_connectionDictionary;
@@ -29,9 +34,10 @@ namespace LittleGraph.Editor
             m_graph = (LGGraph)serializedObject.targetObject;
             m_window = window;
 
+            m_customEditorNodeTypes = new List<Type>();
+            
             m_graphNodes = new List<LGEditorNode>();
             m_nodeDictionary = new Dictionary<string, LGEditorNode>();
-            m_connectionDictionary = new Dictionary<Edge, LGConnection>();
             m_connectionDictionary = new Dictionary<Edge, LGConnection>();
 
             m_searchProvider = ScriptableObject.CreateInstance<LGWindowSearchProvider>();
@@ -52,10 +58,24 @@ namespace LittleGraph.Editor
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new ClickSelector());
 
+            GetCustomEditorNodeTypes();
+            
             DrawNodes();
             DrawConnections();
 
             graphViewChanged += OnGraphViewChangedEvent;
+        }
+
+        private void GetCustomEditorNodeTypes()
+        {
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (Assembly assembly in assemblies)
+            {
+                foreach (Type type in assembly.GetTypes().Where(wType => wType.GetCustomAttribute<LGCustomEditorNodeAttribute>() != null))
+                {
+                    m_customEditorNodeTypes.Add(type);
+                }
+            }
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
@@ -133,7 +153,7 @@ namespace LittleGraph.Editor
             LGEditorNode outputNode = (LGEditorNode)edge.output.node;
             int outputIndex = outputNode.Ports.IndexOf(edge.output);
 
-            LGConnection connection = new LGConnection(inputNode.Node.ID, inputIndex,edge.input.portName, outputNode.Node.ID, outputIndex, edge.output.portName);
+            LGConnection connection = new LGConnection(inputNode.Node.ID, inputIndex, outputNode.Node.ID, outputIndex);
             m_graph.Connections.Add(connection);
             m_connectionDictionary.Add(edge, connection);
             
@@ -177,12 +197,12 @@ namespace LittleGraph.Editor
             DeleteElements(outputPort.connections);
 
             editorNode.Node.OutputPortAmount -= 1;
-            editorNode.Node.OutputUserDatas.Remove(editorNode.Node.OutputUserDatas[^1]);
             
             editorNode.OutputPorts.Remove(outputPort);
             editorNode.Ports.Remove(outputPort);
             
             editorNode.outputContainer.Remove(outputPort);
+            
         }
         
         private void DrawNodes()
@@ -247,6 +267,25 @@ namespace LittleGraph.Editor
         {
             node.TypeName = node.GetType().AssemblyQualifiedName;
 
+            foreach (Type type in m_customEditorNodeTypes)
+            {
+                LGCustomEditorNodeAttribute attribute = type.GetCustomAttribute<LGCustomEditorNodeAttribute>();
+                if (attribute.DisplayedType == node.GetType())
+                {
+                    Debug.Log("Found Custom Type");
+                    LGEditorNode customEditorNode = (LGEditorNode)Activator.CreateInstance(type);
+                    customEditorNode.InitEditorNode(node, m_serializedObject);
+                    
+                    customEditorNode.SetPosition(node.Position);
+                    m_graphNodes.Add(customEditorNode);
+                    m_nodeDictionary.Add(node.ID, customEditorNode);
+                    customEditorNode.OutputRemovedAction += OnRemoveOutput;
+            
+                    AddElement(customEditorNode);
+                    return;
+                }
+            }
+            
             LGEditorNode editorNode = new LGEditorNode(node, m_serializedObject);
             editorNode.SetPosition(node.Position);
             m_graphNodes.Add(editorNode);
