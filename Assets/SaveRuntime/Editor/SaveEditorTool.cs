@@ -132,6 +132,7 @@ namespace SaveRuntime.Editor
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Save Data"))
             {
+                //Get Data Sorted
                 SaveFile.DataPersistentObjNonSorted = SaveFile.FindAllInstanceSavable();
                 SaveFile.DataPersistentObjSorted =
                     GetSortedListOfSavableDataStruct(SaveFile.DataPersistentObjNonSorted);
@@ -152,6 +153,16 @@ namespace SaveRuntime.Editor
                         Debug.Log(fieldInfo.Name + " ");
                     }
                 }
+                //Get Data Sorted
+                SaveFile.DataPersistentObjNonSorted = SaveFile.FindAllInstanceSavable();
+                SaveFile.DataPersistentObjSorted =
+                    GetSortedListOfSavableDataStruct(SaveFile.DataPersistentObjNonSorted);
+                foreach (var currentInstanceInGame in SaveFile.DataPersistentObjSorted)
+                {
+                    SavableStructWithoutScript goodOne =
+                        Content.Find(x => x.TypeOfClass == currentInstanceInGame.TypeOfClass);
+                }
+
             }
             GUILayout.EndHorizontal();
         }
