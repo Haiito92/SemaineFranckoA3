@@ -36,10 +36,25 @@ namespace SaveRuntime.Editor
             stream.Close();
         }
 
-        // public static void LoadContent()
-        // {
-        //     SavableInstanceOfDataStruct
-        // }
+        public static List<SavableStructWithoutScript> LoadContent()
+        {
+            string path = Application.persistentDataPath + "/saveDataState.utils";
+            if (File.Exists(path))
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                FileStream stream = new FileStream(path, FileMode.Open);
+
+                List<SavableStructWithoutScript> deserializeData = formatter.Deserialize(stream) as List<SavableStructWithoutScript>;
+                stream.Close();
+
+                return deserializeData;
+            }
+            else
+            {
+                Debug.Log("Not Found" + path);
+                return null;
+            }
+        }
 
         /**
          * Find All instances for savable files

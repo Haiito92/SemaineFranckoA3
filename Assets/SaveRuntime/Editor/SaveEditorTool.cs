@@ -138,6 +138,22 @@ namespace SaveRuntime.Editor
                 SaveFile.SaveContent(SaveFile.DataPersistentObjSorted);
             }
             GUILayout.EndHorizontal();
+            
+            //Load Button
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Load Data"))
+            {
+                List<SavableStructWithoutScript> Content = SaveFile.LoadContent();
+                foreach (var savableInstanceOfDataStruct in Content)
+                {
+                    Debug.Log(savableInstanceOfDataStruct.NameOfTheObject + " Id : " + savableInstanceOfDataStruct.Id + "Type : " + savableInstanceOfDataStruct.TypeOfClass);
+                    foreach (var fieldInfo in savableInstanceOfDataStruct.Fields)
+                    {
+                        Debug.Log(fieldInfo.Name + " ");
+                    }
+                }
+            }
+            GUILayout.EndHorizontal();
         }
         
         /**
