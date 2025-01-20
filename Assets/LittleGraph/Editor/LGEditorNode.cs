@@ -32,7 +32,7 @@ namespace LittleGraph.Editor
         }
         public List<Port> Ports => m_ports;
 
-        public event Action<LGEditorNode> OutputRemovedAction;
+        public event Action<Port> OutputRemovedAction;
 
         public LGEditorNode()
         {
@@ -104,7 +104,10 @@ namespace LittleGraph.Editor
             if (info.HasMultipleOutputs)
             {
                 titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Plus",OnAddOutput));
-                titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Minus",OnRemoveOutput));
+                titleButtonContainer.Add(new Button().CreateButton("d_Toolbar Minus", () =>
+                {
+                    OnRemoveOutput(m_outputPorts[^1]);
+                }));
             }
         }
 
@@ -114,9 +117,18 @@ namespace LittleGraph.Editor
             CreateFlowOutputPort(m_nodeInfos);
         }
 
-        private void OnRemoveOutput()
+        protected virtual void OnRemoveOutput(Port outputPort)
         {
-            OutputRemovedAction?.Invoke(this);
+            //Create function for removing output
+            if (OutputPorts.Count <= 1) return;
+
+            Node.OutputPortAmount -= 1;
+            
+            OutputPorts.Remove(outputPort);
+            Ports.Remove(outputPort);
+            
+            OutputRemovedAction?.Invoke(outputPort);
+            outputContainer.Remove(outputPort);
         }
         
         private void CreateFlowInputPort()

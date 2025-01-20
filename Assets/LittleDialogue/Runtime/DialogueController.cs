@@ -47,6 +47,19 @@ namespace LittleDialogue.Runtime
                         node.EmitFlow(connection.InputPort.NodeId);
                     });
                 }
+
+                if (dialogueNode is LDMultipleChoiceDialogueNode multipleChoiceDialogueNode)
+                {
+                    int i = 0;
+                    foreach (LGConnection connection in node.NodeConnections.FindAll(connection => connection.OutputPort.NodeId == dialogueNode.ID))
+                    {
+                        m_dialogueBox.UpdateChoiceButton(i, multipleChoiceDialogueNode.ChoiceDatas.Find(x => x.OutputIndex == connection.OutputPort.PortIndex).ChoiceText, () =>
+                        {
+                            node.EmitFlow(connection.InputPort.NodeId);
+                        });
+                        i++;
+                    }
+                }
                 
             }
             // if (node is LDSingleChoiceDialogueNode singleChoiceNode)

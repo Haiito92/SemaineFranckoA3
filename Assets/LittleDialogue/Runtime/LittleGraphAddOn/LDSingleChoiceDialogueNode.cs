@@ -18,16 +18,5 @@ namespace LittleDialogue.Runtime.LittleGraphAddOn
         }
         
     }
-    
-
-    public struct CustomOutputData
-    {
-        public Type Type;
-
-        public CustomOutputData(Type type)
-        {
-            Type = type;
-        }
-    }
 #endif
 }

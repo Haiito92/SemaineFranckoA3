@@ -187,22 +187,9 @@ namespace LittleGraph.Editor
             }
         }
         
-        public void OnRemoveOutput(LGEditorNode editorNode)
+        public void OnRemoveOutput(Port outputPort)
         {
-            //Create function for removing output
-            if (editorNode.OutputPorts.Count <= 1) return;
-            
-            Port outputPort = editorNode.OutputPorts[^1];
-            
             DeleteElements(outputPort.connections);
-
-            editorNode.Node.OutputPortAmount -= 1;
-            
-            editorNode.OutputPorts.Remove(outputPort);
-            editorNode.Ports.Remove(outputPort);
-            
-            editorNode.outputContainer.Remove(outputPort);
-            
         }
         
         private void DrawNodes()

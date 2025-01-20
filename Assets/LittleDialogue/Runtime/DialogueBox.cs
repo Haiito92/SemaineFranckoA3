@@ -36,7 +36,6 @@ namespace LittleDialogue.Runtime
         public void UpdateChoiceButton(int index, string buttonText = "Null", UnityAction callback = null)
         {
             if(index > m_choiceButtons.Count - 1) return;
-            Debug.Log(buttonText);
             Button button = m_choiceButtons[index];
             button.GetComponentInChildren<TextMeshProUGUI>().text = buttonText;
             button.onClick.AddListener(callback);
