@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b5ffe8f6767e2f6419d8dde4f09384fa
+timeCreated: 1431070210
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 36443
+  packageName: CSV2Table
+  packageVersion: 1.0
+  assetPath: Assets/CSV2Table/Demo/Demo.unity
+  uploadId: 62716
