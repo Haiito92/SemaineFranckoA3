@@ -14,7 +14,6 @@ public class LanguageManagerEditor : Editor
     public override void OnInspectorGUI()
     {
         //base.OnInspectorGUI();
-        EditorUtility.SetDirty(target);
 
         Source.LANGUAGEProperty = (LANGUAGES_STATE)EditorGUILayout.EnumPopup(new GUIContent("Language : ", ""), Source.LANGUAGEProperty);
 
@@ -70,6 +69,7 @@ public class LanguageManagerEditor : Editor
 
         void DrawContentTextList(int itemIndex)
         {
+            EditorUtility.SetDirty(target);
             var ld = Source.TextList[itemIndex];
 
             EditorGUILayout.BeginHorizontal();
