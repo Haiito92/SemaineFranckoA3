@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b49c42cfc16b94043a0a9751d05984d2
+timeCreated: 1430980406
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 36443
+  packageName: CSV2Table
+  packageVersion: 1.0
+  assetPath: Assets/CSV2Table/Demo/sample.csv
+  uploadId: 62716

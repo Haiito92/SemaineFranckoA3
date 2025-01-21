@@ -1,3 +1,17 @@
 {
-	"name": "Francko.Runtime"
+    "name": "Francko.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:90d0a610f03bce142a2898f9aa3bbc6f",
+        "GUID:c6a25c179422a4d4ba7dd96cf207fe83"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

@@ -1,0 +1,18 @@
+{
+    "name": "Localization.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b99e0ebe995924d42a5aa8eca7d27abd"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
