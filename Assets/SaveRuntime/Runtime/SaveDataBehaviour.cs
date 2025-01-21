@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using SaveRuntime.Editor;
+using SaveRuntime.Runtime;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace SaveRuntime.Editor
+namespace SaveRuntime.Runtime
 { 
     [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/SaveDataBehaviourSO", order = 1)] 
     public class SaveDataBehaviour : ScriptableObject

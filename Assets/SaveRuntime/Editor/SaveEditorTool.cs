@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
+using SaveRuntime.Runtime;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Compilation;
@@ -16,10 +17,9 @@ namespace SaveRuntime.Editor
         ////Fields
         //window
         private static SaveEditorTool _window;
-
-        //so
-        private SaveDataBehaviour _currentDataBehaviour;
+        private static SelectSoEditorTool _windowSelection;
         
+       
         private List<Type> _allTypes = new List<Type>();
         
         private Dictionary<string, bool> _foldoutProperties = new Dictionary<string, bool>();
@@ -32,10 +32,9 @@ namespace SaveRuntime.Editor
         [MenuItem("EditorToolWindow/SaveEditorTool(do not use atm)")]
         public static void ShowWindow()
         {
-            if (!_window)
+            if (!_windowSelection)
             {
-                _window = GetWindow<SaveEditorTool>("SaveEditorTool");
-                
+                _windowSelection = GetWindow<SelectSoEditorTool>("SaveEditorTool");
             }
             // TODO - SetWindowSize
         }
@@ -47,14 +46,14 @@ namespace SaveRuntime.Editor
             {
                 _window = GetWindow<SaveEditorTool>("SaveEditorTool");
                 //Load current Data
-                _window.Load(saveObject);
+                _window.LoadObj(saveObject);
             }
             // TODO - SetWindowSize
         }
         
-        private void Load(SaveDataBehaviour saveObject)
+        private void LoadObj(SaveDataBehaviour saveObject)
         {
-            _currentDataBehaviour = saveObject;
+            SaveFile._currentDataBehaviour = saveObject;
         }
         
     
@@ -85,7 +84,10 @@ namespace SaveRuntime.Editor
                         newFieldForTypeT.Add(new SaveDataBehaviourStruct(fieldInfo.Name, false));
                     }
                     SaveDataBehaviourTypeStruct newSaveDataTypeStruct = new SaveDataBehaviourTypeStruct(type.Name,i, type, newFieldForTypeT);
-                    UpdateSo(_currentDataBehaviour, newSaveDataTypeStruct);
+                    if (SaveFile._currentDataBehaviour.ListOfType.Any())
+                    {
+                        UpdateSo(SaveFile._currentDataBehaviour, newSaveDataTypeStruct);
+                    }
                 }
             }
             GUILayout.EndHorizontal();
@@ -95,48 +97,45 @@ namespace SaveRuntime.Editor
             _scrollView = EditorGUILayout.BeginScrollView(_scrollView, GUILayout.Height(300));
             
             //CreateFoldout
-            if (_currentDataBehaviour.ListOfType.Count > 0)
+            if (SaveFile._currentDataBehaviour.ListOfType.Count > 0)
             {
-                for(int j = 0; j < _currentDataBehaviour.ListOfType.Count ; j++)
+                for(int j = 0; j < SaveFile._currentDataBehaviour.ListOfType.Count ; j++)
                 {
-                    if (_foldoutProperties.ContainsKey(_currentDataBehaviour.ListOfType[j].Name))
+                    if (_foldoutProperties.ContainsKey(SaveFile._currentDataBehaviour.ListOfType[j].Name))
                     {
-                        _foldoutProperties[_currentDataBehaviour.ListOfType[j].Name] = EditorGUILayout.Foldout(
-                            _foldoutProperties[_currentDataBehaviour.ListOfType[j].Name], _currentDataBehaviour.ListOfType[j].Name);
-                        if (_foldoutProperties[_currentDataBehaviour.ListOfType[j].Name])
+                        _foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name] = EditorGUILayout.Foldout(
+                            _foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name], SaveFile._currentDataBehaviour.ListOfType[j].Name);
+                        if (_foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name])
                         {
-                            for(int i = 0; i < _currentDataBehaviour.ListOfType[j].ListOfFields.Count; i++)
+                            for(int i = 0; i < SaveFile._currentDataBehaviour.ListOfType[j].ListOfFields.Count; i++)
                             {
                                 EditorGUILayout.BeginHorizontal();
-                                _currentDataBehaviour.ListOfType[j].ListOfFields[i] = SaveDataBehaviourStruct.SetCheck(_currentDataBehaviour.ListOfType[j].ListOfFields[i], EditorGUILayout.Toggle("",
-                                    _currentDataBehaviour.ListOfType[j].ListOfFields[i].IsChecked));
-                                EditorGUILayout.LabelField($"{_currentDataBehaviour.ListOfType[j].ListOfFields[i].NameOfField}");
+                                SaveFile._currentDataBehaviour.ListOfType[j].ListOfFields[i] = SaveDataBehaviourStruct.SetCheck(SaveFile._currentDataBehaviour.ListOfType[j].ListOfFields[i], EditorGUILayout.Toggle("",
+                                    SaveFile._currentDataBehaviour.ListOfType[j].ListOfFields[i].IsChecked));
+                                EditorGUILayout.LabelField($"{SaveFile._currentDataBehaviour.ListOfType[j].ListOfFields[i].NameOfField}");
                                 EditorGUILayout.EndHorizontal();
                             }
                         }
                     }
                     else
                     {
-                        _foldoutProperties[_currentDataBehaviour.ListOfType[j].Name] = false;
-                        _foldoutProperties[_currentDataBehaviour.ListOfType[j].Name] = EditorGUILayout.Foldout(_foldoutProperties[_currentDataBehaviour.ListOfType[j].Name], _currentDataBehaviour.ListOfType[j].Name);
-                        if (_foldoutProperties[_currentDataBehaviour.ListOfType[j].Name])
+                        _foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name] = false;
+                        _foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name] = EditorGUILayout.Foldout(_foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name], SaveFile._currentDataBehaviour.ListOfType[j].Name);
+                        if (_foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name])
                         {
                             EditorGUILayout.LabelField("Wow !");
                         }
                     }
                 }
             }
+            
             EditorGUILayout.EndScrollView();
             GUILayout.EndVertical();
             //Save All Presset
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Save Data"))
             {
-                //Get Data Sorted
-                SaveFile.DataPersistentObjNonSorted = SaveFile.FindAllInstanceSavable();
-                SaveFile.DataPersistentObjSorted =
-                    GetSortedListOfSavableDataStruct(SaveFile.DataPersistentObjNonSorted);
-                SaveFile.SaveContent(SaveFile.DataPersistentObjSorted);
+                SaveFile.Save();
             }
             GUILayout.EndHorizontal();
             
@@ -144,25 +143,7 @@ namespace SaveRuntime.Editor
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Load Data"))
             {
-                List<SavableStructWithoutScript> Content = SaveFile.LoadContent();
-                foreach (var savableInstanceOfDataStruct in Content)
-                {
-                    Debug.Log(savableInstanceOfDataStruct.NameOfTheObject + " Id : " + savableInstanceOfDataStruct.Id + "Type : " + savableInstanceOfDataStruct.TypeOfClass);
-                    foreach (var fieldInfo in savableInstanceOfDataStruct.Fields)
-                    {
-                        Debug.Log(fieldInfo.Name + " ");
-                    }
-                }
-                //Get Data Sorted
-                SaveFile.DataPersistentObjNonSorted = SaveFile.FindAllInstanceSavable();
-                SaveFile.DataPersistentObjSorted =
-                    GetSortedListOfSavableDataStruct(SaveFile.DataPersistentObjNonSorted);
-                foreach (var currentInstanceInGame in SaveFile.DataPersistentObjSorted)
-                {
-                    SavableStructWithoutScript goodOne =
-                        Content.Find(x => x.TypeOfClass == currentInstanceInGame.TypeOfClass);
-                }
-
+                SaveFile.Load();
             }
             GUILayout.EndHorizontal();
         }
@@ -184,9 +165,15 @@ namespace SaveRuntime.Editor
             {
                 foreach (var type in assembly.GetTypes())
                 {
+                    SaveDataBehaviour data = CreateInstance<SaveDataBehaviour>();
+                    if (type == data.GetType())
+                    {
+                        Debug.Log("WTFFF LA TEAM");
+                    }
                     if (type.GetCustomAttribute<SavableAttribute>() != null) //Dont check for availability yet
                     {
                         listOfAllTypes.Add(type);
+
                     }
                 }
             }
@@ -226,40 +213,48 @@ namespace SaveRuntime.Editor
             currentSo.ListOfType.Add(currentTypeStruct);
         }
 
-        public List<SavableInstanceOfDataStruct> GetSortedListOfSavableDataStruct(
-            List<SavableInstanceOfDataStruct> nonSortedSavableDataStruct)
+        
+    }
+
+    public class SelectSoEditorTool : EditorWindow
+    {
+        private void OnGUI()
         {
-            List<SavableInstanceOfDataStruct> finalListOfObjWithNiceFields = new List<SavableInstanceOfDataStruct>();
-            foreach (var savableInstanceOfDataStruct in nonSortedSavableDataStruct) //For each of OBJ
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Select the right Data Scriptable Object : ", GUILayout.MinWidth(125));
+            GUILayout.EndHorizontal();
+            //Do Not Use
+            // GUILayout.BeginVertical();
+            // foreach (var soClass in GetSOClasses())
+            // {
+            //     if(GUILayout.Button("SelectSO"))
+            //     {
+            //         //SaveEditorTool.ShowWindow(soClass);
+            //     }    
+            // }
+            // GUILayout.EndVertical();
+
+        }
+        
+        private List<Type> GetSOClasses()
+        {
+            List<Type> listOfAllTypes = new List<Type>(); //Return Value
+            List<Assembly> allAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+
+            foreach (var assembly in allAssemblies)
             {
-                List<FieldInfo> newFieldsInfo = new List<FieldInfo>();
-                //Find a SO type equal to the type of the instance of Script
-                SaveDataBehaviourTypeStruct tempTypeStruct =
-                    _currentDataBehaviour.ListOfType.Find(x =>
-                        x.Name == savableInstanceOfDataStruct.TypeOfClass.Name);
-                
-                
-                if (tempTypeStruct.ListOfFields.Any()) //Check if we found a common type
+                foreach (var type in assembly.GetTypes())
                 {
-                    foreach (var fieldInfoOfSavableAsset in savableInstanceOfDataStruct.Fields)
+                    SaveDataBehaviour data = CreateInstance<SaveDataBehaviour>();
+                    if (type == data.GetType())
                     {
-                        SaveDataBehaviourStruct currentSoField = tempTypeStruct.ListOfFields.Find(x => x.NameOfField == fieldInfoOfSavableAsset.Name);
-                        if (!String.IsNullOrEmpty(currentSoField.NameOfField)) //Check if the field was found
-                        {
-                            var newVar = fieldInfoOfSavableAsset.GetValue(savableInstanceOfDataStruct.Script);
-                            if (currentSoField.IsChecked) //If the SO Field is check, we add it
-                            {
-                                newFieldsInfo.Add(fieldInfoOfSavableAsset); 
-                                Debug.Log("Name of type :  " + savableInstanceOfDataStruct.NameOfTheObject + "Name : " + fieldInfoOfSavableAsset.Name + " " + "Value : " + newVar);
-                            }
-                        }
+                        listOfAllTypes.Add(type);
                     }
-                    
-                    finalListOfObjWithNiceFields.Add(new SavableInstanceOfDataStruct(savableInstanceOfDataStruct.NameOfTheObject, savableInstanceOfDataStruct.Id, savableInstanceOfDataStruct.TypeOfClass, savableInstanceOfDataStruct.Script, newFieldsInfo));
                 }
             }
-            return finalListOfObjWithNiceFields;
+            return listOfAllTypes;
         }
+
     }
 }
 

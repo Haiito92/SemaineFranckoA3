@@ -4,8 +4,10 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using SaveRuntime.Runtime;
 
-namespace SaveRuntime.Editor
+
+namespace SaveRuntime.Runtime
 {
     [Serializable]
     public struct SaveDataBehaviourStruct
@@ -81,13 +83,15 @@ namespace SaveRuntime.Editor
         public Type TypeOfClass;
 
         public List<FieldInfo> Fields;
+        public Dictionary<FieldInfo, object> DicoFieldsForValue;
         
-        public SavableStructWithoutScript(string nameOfTheObject,int id, Type newTypeOfClass, List<FieldInfo> fields)
+        public SavableStructWithoutScript(string nameOfTheObject,int id, Type newTypeOfClass, List<FieldInfo> fields, Dictionary<FieldInfo, object> dicoFieldsForValue)
         {
             NameOfTheObject = nameOfTheObject;
             TypeOfClass = newTypeOfClass;
             Id = id;
             Fields = fields;
+            DicoFieldsForValue = dicoFieldsForValue;
         }
     }
 }

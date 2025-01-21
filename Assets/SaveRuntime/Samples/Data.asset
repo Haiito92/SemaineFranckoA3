@@ -19,9 +19,9 @@ MonoBehaviour:
     - NameOfField: bool1
       IsChecked: 1
     - NameOfField: string1
-      IsChecked: 0
+      IsChecked: 1
     - NameOfField: int1
-      IsChecked: 0
+      IsChecked: 1
   - Name: Test2
     Id: 1
     ListOfFields:
@@ -30,7 +30,7 @@ MonoBehaviour:
     - NameOfField: string1
       IsChecked: 1
     - NameOfField: int1
-      IsChecked: 0
+      IsChecked: 1
   - Name: Test3
     Id: 2
     ListOfFields:
