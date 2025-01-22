@@ -13,7 +13,7 @@ namespace LittleGraph.Runtime
         [SerializeField] private string m_guid;
         [SerializeField] private Rect m_position;
 
-        private int m_outputPortAmount;
+        [SerializeField] private int m_outputPortAmount;
         [SerializeField/*, HideInInspector*/] protected List<LGConnection> m_nodeConnections;
         
         public string TypeName;

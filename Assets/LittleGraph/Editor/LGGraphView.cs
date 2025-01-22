@@ -248,6 +248,8 @@ namespace LittleGraph.Editor
 
             AddNodeToGraph(node);
             BindObject();
+            
+            EditorUtility.SetDirty(m_serializedObject.targetObject);
         }
 
         private void AddNodeToGraph(LGNode node)
