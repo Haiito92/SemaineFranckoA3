@@ -84,10 +84,8 @@ namespace SaveRuntime.Editor
                         newFieldForTypeT.Add(new SaveDataBehaviourStruct(fieldInfo.Name, false));
                     }
                     SaveDataBehaviourTypeStruct newSaveDataTypeStruct = new SaveDataBehaviourTypeStruct(type.Name,i, type, newFieldForTypeT);
-                    if (SaveFile._currentDataBehaviour.ListOfType.Any())
-                    {
-                        UpdateSo(SaveFile._currentDataBehaviour, newSaveDataTypeStruct);
-                    }
+                    UpdateSo(SaveFile._currentDataBehaviour, newSaveDataTypeStruct);
+                    
                 }
             }
             GUILayout.EndHorizontal();
@@ -99,9 +97,10 @@ namespace SaveRuntime.Editor
             //CreateFoldout
             if (SaveFile._currentDataBehaviour.ListOfType.Count > 0)
             {
+                Debug.Log("Hey");
                 for(int j = 0; j < SaveFile._currentDataBehaviour.ListOfType.Count ; j++)
                 {
-                    if (_foldoutProperties.ContainsKey(SaveFile._currentDataBehaviour.ListOfType[j].Name))
+                    if (!_foldoutProperties.TryAdd(SaveFile._currentDataBehaviour.ListOfType[j].Name, false))
                     {
                         _foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name] = EditorGUILayout.Foldout(
                             _foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name], SaveFile._currentDataBehaviour.ListOfType[j].Name);
@@ -119,7 +118,6 @@ namespace SaveRuntime.Editor
                     }
                     else
                     {
-                        _foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name] = false;
                         _foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name] = EditorGUILayout.Foldout(_foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name], SaveFile._currentDataBehaviour.ListOfType[j].Name);
                         if (_foldoutProperties[SaveFile._currentDataBehaviour.ListOfType[j].Name])
                         {
@@ -165,15 +163,9 @@ namespace SaveRuntime.Editor
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    SaveDataBehaviour data = CreateInstance<SaveDataBehaviour>();
-                    if (type == data.GetType())
-                    {
-                        Debug.Log("WTFFF LA TEAM");
-                    }
                     if (type.GetCustomAttribute<SavableAttribute>() != null) //Dont check for availability yet
                     {
                         listOfAllTypes.Add(type);
-
                     }
                 }
             }
@@ -193,6 +185,7 @@ namespace SaveRuntime.Editor
                 {
                     var fieldsOfAType = currentSo.ListOfType[typeStruct.Id].ListOfFields;
                     List<SaveDataBehaviourStruct> newFieldsOfAType = new List<SaveDataBehaviourStruct>();
+                    //Check Lists
                     for (int i = 0; i < currentTypeStruct.ListOfFields.Count; i++)
                     {
                         for (int j = 0; j < fieldsOfAType.Count; j++)
