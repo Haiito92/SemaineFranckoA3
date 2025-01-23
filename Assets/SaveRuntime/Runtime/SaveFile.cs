@@ -127,33 +127,75 @@ namespace SaveRuntime.Runtime
         }
 
 
-        public static void Save()
+        public static void Save(int soId)
         {
             //Get Data Sorted
-            Debug.Log("qsd");
-            var path = AssetDatabase.FindAssets("t:SaveDataBehaviour")[0];
-            var finalpath = AssetDatabase.GUIDToAssetPath(path);
+            var path = AssetDatabase.FindAssets("t:SaveDataBehaviour");
+            if (soId >= path.Length)
+            {
+                return;
+            }
+            var finalpath = AssetDatabase.GUIDToAssetPath(path[soId]);
             _currentDataBehaviour = AssetDatabase.LoadAssetAtPath<SaveDataBehaviour>(finalpath);
+            
             DataPersistentObjNonSorted = FindAllInstanceSavable();
             DataPersistentObjSorted =
                 GetSortedListOfSavableDataStruct(DataPersistentObjNonSorted);
+            
+            SaveContent(DataPersistentObjSorted);
+        }
+        
+        public static void Save(SaveDataBehaviour currentBehaviour)
+        {
+            _currentDataBehaviour = currentBehaviour;
+            
+            DataPersistentObjNonSorted = FindAllInstanceSavable();
+            DataPersistentObjSorted =
+                GetSortedListOfSavableDataStruct(DataPersistentObjNonSorted);
+            
             SaveContent(DataPersistentObjSorted);
         }
 
-        public static void Load()
+        public static void Load(int soId)
         {
-            var path = AssetDatabase.FindAssets("t:SaveDataBehaviour")[0];
-            var finalpath = AssetDatabase.GUIDToAssetPath(path);
+            var path = AssetDatabase.FindAssets("t:SaveDataBehaviour");
+            if (soId >= path.Length)
+            {
+                return;
+            }
+            var finalpath = AssetDatabase.GUIDToAssetPath(path[soId]);
             _currentDataBehaviour = AssetDatabase.LoadAssetAtPath<SaveDataBehaviour>(finalpath);
+            
             List<SavableStructWithoutScript> Content = LoadContent();
-            // foreach (var savableInstanceOfDataStruct in Content)
-            // {
-            //     Debug.Log(savableInstanceOfDataStruct.NameOfTheObject + " Id : " + savableInstanceOfDataStruct.Id + "Type : " + savableInstanceOfDataStruct.TypeOfClass);
-            //     foreach (var keys in savableInstanceOfDataStruct.DicoFieldsForValue)
-            //     {
-            //         Debug.Log("Field info name : " + keys.Key.Name + " " + "Value : " + keys.Value);
-            //     }
-            // }
+            //Get Data Sorted
+            DataPersistentObjNonSorted = FindAllInstanceSavable();
+            DataPersistentObjSorted =
+                GetSortedListOfSavableDataStruct(DataPersistentObjNonSorted);
+            foreach (var currentInstanceInGame in DataPersistentObjSorted)
+            {
+                SavableStructWithoutScript goodOne =
+                    Content.Find(x => x.NameOfTheObject == currentInstanceInGame.NameOfTheObject);
+                if (goodOne.Fields.Any())
+                {
+                    foreach (var fieldInfoOfCurrentObj in currentInstanceInGame.Fields)
+                    {
+                        foreach (var fieldInfoOfSavedObj in goodOne.Fields)
+                        {
+                            if (fieldInfoOfCurrentObj.Name == fieldInfoOfSavedObj.Name)
+                            {
+                                fieldInfoOfCurrentObj.SetValue(currentInstanceInGame.Script,goodOne.DicoFieldsForValue[fieldInfoOfSavedObj]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        public static void Load(SaveDataBehaviour currentBehaviour)
+        {
+            _currentDataBehaviour = currentBehaviour;
+            
+            List<SavableStructWithoutScript> Content = LoadContent();
             //Get Data Sorted
             DataPersistentObjNonSorted = FindAllInstanceSavable();
             DataPersistentObjSorted =

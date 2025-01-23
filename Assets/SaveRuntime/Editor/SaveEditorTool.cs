@@ -7,6 +7,7 @@ using SaveRuntime.Runtime;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Compilation;
+using UnityEditor.VersionControl;
 using UnityEngine.UI;
 using Assembly = System.Reflection.Assembly;
 
@@ -29,7 +30,7 @@ namespace SaveRuntime.Editor
         private Vector2 _scrollView = Vector2.zero;
         
         ////Functions
-        [MenuItem("EditorToolWindow/SaveEditorTool(do not use atm)")]
+        [MenuItem("EditorToolWindow/SaveEditorTool")]
         public static void ShowWindow()
         {
             if (!_windowSelection)
@@ -49,6 +50,8 @@ namespace SaveRuntime.Editor
                 _window.LoadObj(saveObject);
             }
             // TODO - SetWindowSize
+            _window.UpdateToolValues();
+
         }
         
         private void LoadObj(SaveDataBehaviour saveObject)
@@ -71,22 +74,7 @@ namespace SaveRuntime.Editor
             EditorGUILayout.LabelField("Press to get all scripts : ", GUILayout.MinWidth(125));
             if(GUILayout.Button("Press Here"))
             {
-                _allTypes = GetAssemblyClasses(); //Get Types
-
-                //Update SO
-                int i = -1;
-                foreach (var type in _allTypes)
-                {
-                    i++;
-                    List<SaveDataBehaviourStruct> newFieldForTypeT = new List<SaveDataBehaviourStruct>();
-                    foreach (var fieldInfo in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
-                    {
-                        newFieldForTypeT.Add(new SaveDataBehaviourStruct(fieldInfo.Name, false));
-                    }
-                    SaveDataBehaviourTypeStruct newSaveDataTypeStruct = new SaveDataBehaviourTypeStruct(type.Name,i, type, newFieldForTypeT);
-                    UpdateSo(SaveFile._currentDataBehaviour, newSaveDataTypeStruct);
-                    
-                }
+                UpdateToolValues();
             }
             GUILayout.EndHorizontal();
             GUILayout.BeginVertical();
@@ -97,7 +85,6 @@ namespace SaveRuntime.Editor
             //CreateFoldout
             if (SaveFile._currentDataBehaviour.ListOfType.Count > 0)
             {
-                Debug.Log("Hey");
                 for(int j = 0; j < SaveFile._currentDataBehaviour.ListOfType.Count ; j++)
                 {
                     if (!_foldoutProperties.TryAdd(SaveFile._currentDataBehaviour.ListOfType[j].Name, false))
@@ -133,7 +120,7 @@ namespace SaveRuntime.Editor
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Save Data"))
             {
-                SaveFile.Save();
+                SaveFile.Save(SaveFile._currentDataBehaviour);
             }
             GUILayout.EndHorizontal();
             
@@ -141,11 +128,29 @@ namespace SaveRuntime.Editor
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Load Data"))
             {
-                SaveFile.Load();
+                SaveFile.Load(SaveFile._currentDataBehaviour);
             }
             GUILayout.EndHorizontal();
         }
-        
+
+        private void UpdateToolValues()
+        {
+            _allTypes = GetAssemblyClasses(); //Get Types
+            //Update SO
+            int i = -1;
+            foreach (var type in _allTypes)
+            {
+                i++;
+                List<SaveDataBehaviourStruct> newFieldForTypeT = new List<SaveDataBehaviourStruct>();
+                foreach (var fieldInfo in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                {
+                    newFieldForTypeT.Add(new SaveDataBehaviourStruct(fieldInfo.Name, false));
+                }
+                SaveDataBehaviourTypeStruct newSaveDataTypeStruct = new SaveDataBehaviourTypeStruct(type.Name,i, type, newFieldForTypeT);
+                UpdateSo(SaveFile._currentDataBehaviour, newSaveDataTypeStruct);
+            }
+        }
+
         /**
          * GetAssemblyClasses -> FCT
          *
@@ -186,16 +191,25 @@ namespace SaveRuntime.Editor
                     var fieldsOfAType = currentSo.ListOfType[typeStruct.Id].ListOfFields;
                     List<SaveDataBehaviourStruct> newFieldsOfAType = new List<SaveDataBehaviourStruct>();
                     //Check Lists
-                    for (int i = 0; i < currentTypeStruct.ListOfFields.Count; i++)
+                    bool isFound = false;
+                    for (int i = 0; i < currentTypeStruct.ListOfFields.Count; i++) //new value
                     {
-                        for (int j = 0; j < fieldsOfAType.Count; j++)
+                        isFound = false;
+                        for (int j = 0; j < fieldsOfAType.Count; j++) //current SO
                         {
                             if (currentTypeStruct.ListOfFields[i].NameOfField == fieldsOfAType[j].NameOfField)
                             {
                                 var saveDataBehaviourStructFieldTemp = currentTypeStruct.ListOfFields[i];
                                 saveDataBehaviourStructFieldTemp.IsChecked = fieldsOfAType[j].IsChecked;
                                 newFieldsOfAType.Add(saveDataBehaviourStructFieldTemp);
+                                isFound = true;
                             }
+                        }
+                        if (isFound == false)
+                        {
+                            var newSaveDataBehaviourStructFieldTemp = currentTypeStruct.ListOfFields[i];
+                            newSaveDataBehaviourStructFieldTemp.IsChecked = false;
+                            newFieldsOfAType.Add(newSaveDataBehaviourStructFieldTemp);
                         }
                     }
                     SaveDataBehaviourTypeStruct newTypeStruct = new SaveDataBehaviourTypeStruct(typeStruct.Name, typeStruct.Id, typeStruct.TypeOfClass, newFieldsOfAType);
@@ -217,35 +231,26 @@ namespace SaveRuntime.Editor
             EditorGUILayout.LabelField("Select the right Data Scriptable Object : ", GUILayout.MinWidth(125));
             GUILayout.EndHorizontal();
             //Do Not Use
-            // GUILayout.BeginVertical();
-            // foreach (var soClass in GetSOClasses())
-            // {
-            //     if(GUILayout.Button("SelectSO"))
-            //     {
-            //         //SaveEditorTool.ShowWindow(soClass);
-            //     }    
-            // }
-            // GUILayout.EndVertical();
+             GUILayout.BeginVertical();
 
+             string[] listOfPath = GetSOClassesPath();
+             for (int i = 0; i < listOfPath.Length; i++)
+             {
+                 if(GUILayout.Button("SelectSO number " + i))
+                 {
+                     SaveDataBehaviour soClass = AssetDatabase.LoadAssetAtPath<SaveDataBehaviour>(AssetDatabase.GUIDToAssetPath(listOfPath[i]));
+                     SaveEditorTool.ShowWindow(soClass);
+                     Close();
+                 }    
+             }
+             GUILayout.EndVertical();
         }
         
-        private List<Type> GetSOClasses()
+        private string[] GetSOClassesPath()
         {
-            List<Type> listOfAllTypes = new List<Type>(); //Return Value
-            List<Assembly> allAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+            string[] listOfPath = AssetDatabase.FindAssets("t:SaveDataBehaviour");
 
-            foreach (var assembly in allAssemblies)
-            {
-                foreach (var type in assembly.GetTypes())
-                {
-                    SaveDataBehaviour data = CreateInstance<SaveDataBehaviour>();
-                    if (type == data.GetType())
-                    {
-                        listOfAllTypes.Add(type);
-                    }
-                }
-            }
-            return listOfAllTypes;
+            return listOfPath;
         }
 
     }

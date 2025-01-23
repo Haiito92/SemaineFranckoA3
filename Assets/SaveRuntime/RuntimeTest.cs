@@ -14,11 +14,11 @@ using UnityEngine;
         
         public void LaunchSave()
         {
-            SaveFile.Save();
+            SaveFile.Save(0);
         }
         public void LaunchLoad()
         {
-            SaveFile.Load();
+            SaveFile.Load(0);
             Test1 value = compToSave.GetComponent<Test1>();
             text.text = value.string1;
 

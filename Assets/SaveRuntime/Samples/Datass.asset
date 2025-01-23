@@ -10,29 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bdf0a3ac550cf1f4d99a4d46e49a85a3, type: 3}
-  m_Name: Data
+  m_Name: Datass
   m_EditorClassIdentifier: SaveRuntime.Runtime:SaveRuntime.Runtime:SaveDataBehaviour
   ListOfType:
   - Name: Test1
     Id: 0
     ListOfFields:
     - NameOfField: bool1
-      IsChecked: 1
+      IsChecked: 0
     - NameOfField: string1
-      IsChecked: 1
+      IsChecked: 0
     - NameOfField: int1
-      IsChecked: 1
+      IsChecked: 0
     - NameOfField: int2
-      IsChecked: 1
+      IsChecked: 0
   - Name: Test2
     Id: 1
     ListOfFields:
     - NameOfField: bool1
-      IsChecked: 1
+      IsChecked: 0
     - NameOfField: string1
-      IsChecked: 1
+      IsChecked: 0
     - NameOfField: int1
-      IsChecked: 1
+      IsChecked: 0
   - Name: Test3
     Id: 2
     ListOfFields:

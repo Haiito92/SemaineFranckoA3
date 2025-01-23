@@ -9,7 +9,6 @@ public class Test1 : MonoBehaviour
     public string string1 = "string1";
 
     protected int int1 = 15;
-
-    private Vector3 position;
-
+    
+    protected int int2 = 15;
 }
